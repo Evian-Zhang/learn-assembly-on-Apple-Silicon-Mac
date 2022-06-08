@@ -23,3 +23,11 @@
 * 能看懂C语言编写的程序
 * 适当了解计算机体系结构知识
 * 能够简单使用命令行进行操作
+
+## 参考资料
+
+* [Using `as`](https://sourceware.org/binutils/docs/as/index.html)
+* [Armv8-A Instruction Set Architecture](https://developer.arm.com/-/media/Arm%20Developer%20Community/PDF/Learn%20the%20Architecture/Armv8-A%20Instruction%20Set%20Architecture.pdf)
+* [ARMv8 Instruction Set Overview](https://class.ece.uw.edu/469/peckol/doc/ARM/ARM_v8_Instruction_Set_Architecture_(Overview).pdf)（不知道为什么，官方网站上不再提供这篇文档）
+* [Arm Architecture Reference Manual for A-profile architecture](https://developer.arm.com/documentation/ddi0487/latest)
+* [ARM Assembly Language](https://www.oreilly.com/library/view/arm-assembly-language/9781482229851/)
