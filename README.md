@@ -31,3 +31,4 @@
 * [ARMv8 Instruction Set Overview](https://class.ece.uw.edu/469/peckol/doc/ARM/ARM_v8_Instruction_Set_Architecture_(Overview).pdf)（不知道为什么，官方网站上不再提供这篇文档）
 * [Arm Architecture Reference Manual for A-profile architecture](https://developer.arm.com/documentation/ddi0487/latest)
 * [ARM Assembly Language](https://www.oreilly.com/library/view/arm-assembly-language/9781482229851/)
+* [Writing ARM64 Code for Apple Platforms](https://developer.apple.com/documentation/xcode/writing-arm64-code-for-apple-platforms)
