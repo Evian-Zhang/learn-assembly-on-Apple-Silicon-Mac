@@ -10,7 +10,9 @@
 4-aslr: 4-aslr.c
 	$(CC) 4-aslr.c -o 4-aslr
 
-all: 2-floating-precision 2-special-numbers 3-endianness 4-aslr
+4-memory-access: 4-memory-access.c
+	$(CC) 4-memory-access.c -o 4-memory-access
 
+all: 2-floating-precision 2-special-numbers 3-endianness 4-aslr 4-memory-access
 clean:
-	rm 2-floating-precision 2-special-numbers 3-endianness 4-aslr
+	rm 2-floating-precision 2-special-numbers 3-endianness 4-aslr 4-memory-access

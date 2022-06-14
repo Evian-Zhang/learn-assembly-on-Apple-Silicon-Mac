@@ -24,6 +24,26 @@
 * 适当了解计算机体系结构知识
 * 能够简单使用命令行进行操作
 
+## 编程环境
+
+我在写这系列文章时，所使用的环境为：
+
+* 芯片
+
+   Apple M1 Pro
+* 操作系统
+
+   macOS 12.4
+* 操作系统内核
+
+   Darwin Kernel Version 21.5.0
+* XNU源码版本
+
+   `xnu-8020.101.4`，下载于[apple-oss-distributions/xnu](https://github.com/apple-oss-distributions/xnu)
+* `clang`版本
+
+   Apple clang version 13.1.6 (clang-1316.0.21.2)
+
 ## 参考资料
 
 * [Using `as`](https://sourceware.org/binutils/docs/as/index.html)
