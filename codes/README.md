@@ -2,12 +2,12 @@
 
 编译：
 
-```console
+```bash
 make all
 ```
 
 清理：
 
-```console
+```bash
 make clean
 ```
