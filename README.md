@@ -54,3 +54,13 @@
 * [Arm Architecture Reference Manual for A-profile architecture](https://developer.arm.com/documentation/ddi0487/latest)
 * [ARM Assembly Language](https://www.oreilly.com/library/view/arm-assembly-language/9781482229851/)
 * [Writing ARM64 Code for Apple Platforms](https://developer.apple.com/documentation/xcode/writing-arm64-code-for-apple-platforms)
+
+#### License
+
+<sup>
+本仓库遵循<a href="https://creativecommons.org/licenses/by/4.0/">CC-BY-4.0版权协议</a>。
+</sup>
+
+<sub>
+作为<a href="https://copyleft.org/">copyleft</a>的支持者之一，我由衷地欢迎大家积极热情地参与到开源社区中。Happy coding!
+</sub>
