@@ -1,4 +1,5 @@
 *
 !*.c
+!*.s
 !Makefile
 !README.md
