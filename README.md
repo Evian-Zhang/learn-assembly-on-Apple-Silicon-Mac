@@ -58,7 +58,7 @@
 
 ## TODOs
 
-* 持续以下两个issue。如果GitHub Actions提供了Apple Silicon Mac的环境，则添加对代码编译正确性的CI。
+* 持续关注以下两个issue。如果GitHub Actions提供了Apple Silicon Mac的环境，则添加对代码编译正确性的CI。
 
    * [actions/virtual-environments#2187](https://github.com/actions/virtual-environments/issues/2187)
    * [github/roadmap#528](https://github.com/github/roadmap/issues/528)
