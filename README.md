@@ -56,6 +56,13 @@
 * [ARM Assembly Language](https://www.oreilly.com/library/view/arm-assembly-language/9781482229851/)
 * [Writing ARM64 Code for Apple Platforms](https://developer.apple.com/documentation/xcode/writing-arm64-code-for-apple-platforms)
 
+## TODOs
+
+* 持续以下两个issue。如果GitHub Actions提供了Apple Silicon Mac的环境，则添加对代码编译正确性的CI。
+
+   * [Support for VMs on Apple M1 actions/virtual-environments#2187](https://github.com/actions/virtual-environments/issues/2187)
+   * [Actions: GitHub-hosted macOS runners now offer Apple M1 silicon options github/roadmap#528](https://github.com/github/roadmap/issues/528)
+
 #### License
 
 <sup>
