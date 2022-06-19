@@ -24,6 +24,10 @@ LDFLAGS = -lSystem -L $(SDKROOT)/usr/lib
 	$(AS) 7-zero-register.s -o 7-zero-register.o
 	$(LD) $(LDFLAGS) 7-zero-register.o -o 7-zero-register
 
+8-ldr-pseudo-instruction: 8-ldr-pseudo-instruction.s
+	$(AS) 8-ldr-pseudo-instruction.s -o 8-ldr-pseudo-instruction.o
+	$(LD) $(LDFLAGS) 8-ldr-pseudo-instruction.o -o 8-ldr-pseudo-instruction
+
 all: \
 	2-floating-precision \
 	2-special-numbers \
@@ -31,7 +35,8 @@ all: \
 	4-aslr \
 	4-memory-access \
 	5-basic \
-	7-zero-register
+	7-zero-register \
+	8-ldr-pseudo-instruction
 clean:
 	rm *.o \
 		2-floating-precision \
@@ -40,4 +45,5 @@ clean:
 		4-aslr \
 		4-memory-access \
 		5-basic \
-		7-zero-register
+		7-zero-register \
+		8-ldr-pseudo-instruction
