@@ -32,6 +32,10 @@ LDFLAGS = -lSystem -L $(SDKROOT)/usr/lib
 	$(AS) 8-ldr-pseudo-instruction.s -o 8-ldr-pseudo-instruction.o
 	$(LD) $(LDFLAGS) 8-ldr-pseudo-instruction.o -o 8-ldr-pseudo-instruction
 
+9-div: 9-div.s
+	$(AS) 9-div.s -o 9-div.o
+	$(LD) $(LDFLAGS) 9-div.o -o 9-div
+
 all: \
 	2-floating-precision \
 	2-special-numbers \
@@ -41,7 +45,9 @@ all: \
 	5-basic \
 	7-alias-instructions \
 	7-zero-register \
-	8-ldr-pseudo-instruction
+	8-ldr-pseudo-instruction \
+	9-div
+
 clean:
 	rm *.o \
 		2-floating-precision \
@@ -52,4 +58,5 @@ clean:
 		5-basic \
 		7-alias-instructions \
 		7-zero-register \
-		8-ldr-pseudo-instruction
+		8-ldr-pseudo-instruction \
+		9-div
