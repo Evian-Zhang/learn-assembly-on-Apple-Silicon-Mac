@@ -20,6 +20,10 @@ LDFLAGS = -lSystem -L $(SDKROOT)/usr/lib
 	$(AS) 5-basic.s -o 5-basic.o
 	$(LD) $(LDFLAGS) 5-basic.o -o 5-basic
 
+7-alias-instructions: 7-alias-instructions.s
+	$(AS) 7-alias-instructions.s -o 7-alias-instructions.o
+	$(LD) $(LDFLAGS) 7-alias-instructions.o -o 7-alias-instructions
+
 7-zero-register: 7-zero-register.s
 	$(AS) 7-zero-register.s -o 7-zero-register.o
 	$(LD) $(LDFLAGS) 7-zero-register.o -o 7-zero-register
@@ -35,6 +39,7 @@ all: \
 	4-aslr \
 	4-memory-access \
 	5-basic \
+	7-alias-instructions \
 	7-zero-register \
 	8-ldr-pseudo-instruction
 clean:
@@ -45,5 +50,6 @@ clean:
 		4-aslr \
 		4-memory-access \
 		5-basic \
+		7-alias-instructions \
 		7-zero-register \
 		8-ldr-pseudo-instruction
