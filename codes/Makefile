@@ -36,11 +36,11 @@ LDFLAGS = -lSystem -L $(SDKROOT)/usr/lib
 	$(AS) 9-div.s -o 9-div.o
 	$(LD) $(LDFLAGS) 9-div.o -o 9-div
 
-10-likely: 10-likely.c
-	$(CC) 10-likely.c -O1 -S -o 10-likely.s
+11-likely: 11-likely.c
+	$(CC) 11-likely.c -O1 -S -o 11-likely.s
 
-10-switch: 10-switch.c
-	$(CC) 10-switch.c -S -o 10-switch.s
+11-switch: 11-switch.c
+	$(CC) 11-switch.c -S -o 11-switch.s
 
 all: \
 	2-floating-precision \
@@ -53,8 +53,8 @@ all: \
 	7-zero-register \
 	8-ldr-pseudo-instruction \
 	9-div \
-	10-likely \
-	10-switch
+	11-likely \
+	11-switch
 
 clean:
 	rm *.o \
@@ -68,5 +68,5 @@ clean:
 		7-zero-register \
 		8-ldr-pseudo-instruction \
 		9-div \
-		10-likely.s \
-		10-switch.s
+		11-likely.s \
+		11-switch.s

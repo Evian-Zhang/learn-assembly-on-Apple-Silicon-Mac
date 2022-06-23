@@ -3,5 +3,5 @@
 !*.s
 !Makefile
 !README.md
-10-likely.s
-10-switch.s
+11-likely.s
+11-switch.s
