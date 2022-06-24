@@ -36,6 +36,9 @@ LDFLAGS = -lSystem -L $(SDKROOT)/usr/lib
 	$(AS) 9-div.s -o 9-div.o
 	$(LD) $(LDFLAGS) 9-div.o -o 9-div
 
+10-alignment: 10-alignment.c
+	$(CC) 10-alignment.c -o 10-alignment
+
 11-likely: 11-likely.c
 	$(CC) 11-likely.c -O1 -S -o 11-likely.s
 
@@ -53,6 +56,7 @@ all: \
 	7-zero-register \
 	8-ldr-pseudo-instruction \
 	9-div \
+	10-alignment \
 	11-likely \
 	11-switch
 
@@ -68,5 +72,6 @@ clean:
 		7-zero-register \
 		8-ldr-pseudo-instruction \
 		9-div \
+		10-alignment \
 		11-likely.s \
 		11-switch.s
