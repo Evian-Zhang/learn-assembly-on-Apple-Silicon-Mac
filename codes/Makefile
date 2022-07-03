@@ -45,6 +45,9 @@ LDFLAGS = -lSystem -L $(SDKROOT)/usr/lib
 11-switch: 11-switch.c
 	$(CC) 11-switch.c -S -o 11-switch.s
 
+12-stack-overflow: 12-stack-overflow.c
+	$(CC) 12-stack-overflow.c -o 12-stack-overflow
+
 all: \
 	2-floating-precision \
 	2-special-numbers \
@@ -58,7 +61,8 @@ all: \
 	9-div \
 	10-alignment \
 	11-likely \
-	11-switch
+	11-switch \
+	12-stack-overflow
 
 clean:
 	rm *.o \
@@ -74,4 +78,5 @@ clean:
 		9-div \
 		10-alignment \
 		11-likely.s \
-		11-switch.s
+		11-switch.s \
+		12-stack-overflow
