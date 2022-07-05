@@ -48,6 +48,9 @@ LDFLAGS = -lSystem -L $(SDKROOT)/usr/lib
 12-stack-overflow: 12-stack-overflow.c
 	$(CC) 12-stack-overflow.c -o 12-stack-overflow
 
+12-argument-passing: 12-argument-passing.c
+	$(CC) 12-argument-passing.c -S -o 12-argument-passing.s
+
 all: \
 	2-floating-precision \
 	2-special-numbers \
@@ -62,7 +65,8 @@ all: \
 	10-alignment \
 	11-likely \
 	11-switch \
-	12-stack-overflow
+	12-stack-overflow \
+	12-argument-passing
 
 clean:
 	rm *.o \
@@ -79,4 +83,5 @@ clean:
 		10-alignment \
 		11-likely.s \
 		11-switch.s \
-		12-stack-overflow
+		12-stack-overflow \
+		12-argument-passing.s
