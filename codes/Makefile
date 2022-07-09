@@ -55,6 +55,10 @@ LDFLAGS = -lSystem -L $(SDKROOT)/usr/lib
 	$(AS) 12-fibonacci.s -o 12-fibonacci.o
 	$(LD) $(LDFLAGS) 12-fibonacci.o -o 12-fibonacci
 
+13-hello-world: 13-hello-world.s
+	$(AS) 13-hello-world.s -o 13-hello-world.o
+	$(LD) $(LDFLAGS) 13-hello-world.o -o 13-hello-world
+
 all: \
 	2-floating-precision \
 	2-special-numbers \
@@ -71,7 +75,8 @@ all: \
 	11-switch \
 	12-stack-overflow \
 	12-argument-passing \
-	12-fibonacci
+	12-fibonacci \
+	13-hello-world
 
 clean:
 	rm *.o \
@@ -90,4 +95,5 @@ clean:
 		11-switch.s \
 		12-stack-overflow \
 		12-argument-passing.s \
-		12-fibonacci
+		12-fibonacci \
+		13-hello-world
