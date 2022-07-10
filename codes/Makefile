@@ -59,6 +59,27 @@ LDFLAGS = -lSystem -L $(SDKROOT)/usr/lib
 	$(AS) 13-hello-world.s -o 13-hello-world.o
 	$(LD) $(LDFLAGS) 13-hello-world.o -o 13-hello-world
 
+14-foo1.o: 14-foo1.s
+	$(AS) 14-foo1.s -o 14-foo1.o
+
+14-foo2.o: 14-foo2.s
+	$(AS) 14-foo2.s -o 14-foo2.o
+
+lib14-foo-static.a: 14-foo1.o 14-foo2.o
+	$(AR) rcs lib14-foo-static.a 14-foo1.o 14-foo2.o
+
+lib14-foo-dynamic.dylib: 14-foo1.o 14-foo2.o
+	$(LD) $(LDFLAGS) 14-foo1.o 14-foo2.o -dylib -o lib14-foo-dynamic.dylib
+
+14-main.o: 14-main.s
+	$(AS) 14-main.s -o 14-main.o
+
+14-main-static: 14-main.o lib14-foo-static.a
+	$(LD) $(LDFLAGS) -L. 14-main.o -l14-foo-static -o 14-main-static
+
+14-main-dynamic: 14-main.o lib14-foo-dynamic.dylib
+	$(LD) $(LDFLAGS) -L. 14-main.o -l14-foo-dynamic -o 14-main-dynamic
+
 all: \
 	2-floating-precision \
 	2-special-numbers \
@@ -76,10 +97,12 @@ all: \
 	12-stack-overflow \
 	12-argument-passing \
 	12-fibonacci \
-	13-hello-world
+	13-hello-world \
+	14-main-static \
+	14-main-dynamic
 
 clean:
-	rm *.o \
+	rm *.o *.a *.dylib \
 		2-floating-precision \
 		2-special-numbers \
 		3-endianness \
@@ -96,4 +119,6 @@ clean:
 		12-stack-overflow \
 		12-argument-passing.s \
 		12-fibonacci \
-		13-hello-world
+		13-hello-world \
+		14-main-static \
+		14-main-dynamic
