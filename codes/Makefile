@@ -80,6 +80,9 @@ lib14-foo-dynamic.dylib: 14-foo1.o 14-foo2.o
 14-main-dynamic: 14-main.o lib14-foo-dynamic.dylib
 	$(LD) $(LDFLAGS) -L. 14-main.o -l14-foo-dynamic -o 14-main-dynamic
 
+15-swap: 15-swap.c
+	$(CC) 15-swap.c -o 15-swap
+
 all: \
 	2-floating-precision \
 	2-special-numbers \
@@ -99,7 +102,8 @@ all: \
 	12-fibonacci \
 	13-hello-world \
 	14-main-static \
-	14-main-dynamic
+	14-main-dynamic \
+	15-swap
 
 clean:
 	rm *.o *.a *.dylib \
@@ -121,4 +125,5 @@ clean:
 		12-fibonacci \
 		13-hello-world \
 		14-main-static \
-		14-main-dynamic
+		14-main-dynamic \
+		15-swap
