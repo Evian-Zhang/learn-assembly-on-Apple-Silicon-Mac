@@ -1,0 +1,222 @@
+<!DOCTYPE HTML>
+<html lang="zh-Hans" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>系统调用 - 在 Apple Silicon Mac 上入门汇编语言</title>
+        <!-- Custom HTML head -->
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <!-- MathJax -->
+        <script async type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="index.html">引言</a></li><li class="chapter-item expanded "><a href="1-底层的整数.html"><strong aria-hidden="true">1.</strong> 底层的整数</a></li><li class="chapter-item expanded "><a href="2-底层的浮点数.html"><strong aria-hidden="true">2.</strong> 底层的浮点数</a></li><li class="chapter-item expanded "><a href="3-硬件基础.html"><strong aria-hidden="true">3.</strong> 硬件基础</a></li><li class="chapter-item expanded "><a href="4-操作系统.html"><strong aria-hidden="true">4.</strong> 操作系统</a></li><li class="chapter-item expanded "><a href="5-第一个汇编程序.html"><strong aria-hidden="true">5.</strong> 第一个汇编程序</a></li><li class="chapter-item expanded "><a href="6-汇编语言初识.html"><strong aria-hidden="true">6.</strong> 汇编语言初识</a></li><li class="chapter-item expanded "><a href="7-汇编指令与寄存器.html"><strong aria-hidden="true">7.</strong> 汇编指令与寄存器</a></li><li class="chapter-item expanded "><a href="8-赋值指令.html"><strong aria-hidden="true">8.</strong> 赋值指令</a></li><li class="chapter-item expanded "><a href="9-基本的数据处理指令.html"><strong aria-hidden="true">9.</strong> 基本的数据处理指令</a></li><li class="chapter-item expanded "><a href="10-内存交互.html"><strong aria-hidden="true">10.</strong> 内存交互</a></li><li class="chapter-item expanded "><a href="11-跳转.html"><strong aria-hidden="true">11.</strong> 跳转</a></li><li class="chapter-item expanded "><a href="12-函数.html"><strong aria-hidden="true">12.</strong> 函数</a></li><li class="chapter-item expanded "><a href="13-系统调用.html" class="active"><strong aria-hidden="true">13.</strong> 系统调用</a></li><li class="chapter-item expanded "><a href="14-汇编、链接与调试.html"><strong aria-hidden="true">14.</strong> 汇编、链接与调试</a></li><li class="chapter-item expanded "><a href="15-与C语言交互.html"><strong aria-hidden="true">15.</strong> 与C语言交互</a></li><li class="chapter-item expanded "><a href="16-浮点数与SIMD.html"><strong aria-hidden="true">16.</strong> 浮点数与SIMD</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">在 Apple Silicon Mac 上入门汇编语言</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/Evian-Zhang/learn-assembly-on-Apple-Silicon-Mac" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="系统调用"><a class="header" href="#系统调用">系统调用</a></h1>
+<p>到目前为止，如果我们不调用系统库的函数，我们写出来的绝大部分的程序都是<strong>无状态的</strong>。也就是说，无论我们调用多少次这个程序，程序的结果都永远相同（当然也有例外，大家不妨想想有怎样的程序，不调用外部函数的情况下，每次调用的输出不同）。事实上，如果想要程序变成有状态的，包括读取用户输入、读写文件、发送网络请求等等，都需要内核的配合。</p>
+<p>但是，我们在用户态的程序不能直接通过<code>bl</code>来调用内核的函数。我们在<a href="./4-%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F.html">操作系统</a>中提到，AArch64有不同的异常级别。一般来说，用户态程序的异常级别是EL0，内核处于EL1。低异常级别的程序是不能调用高异常级别的函数的。</p>
+<p>为了调用内核的函数，我们需要使用特殊的指令，切换异常等级。这就是<code>svc</code>（Supervisor Call）指令。其使用方法类似于：</p>
+<pre><code class="language-armasm">svc    #0x80
+</code></pre>
+<p>这个命令会向EL1生成一个异常，系统将根据后面跟着的数，这里就是<code>0x80</code>，来判断怎样处理这个异常。在macOS中，大部分的系统调用都是可以通过<code>0x80</code>这个数来调用。</p>
+<p>操作系统内核提供的系统调用有非常多，比如说<code>read</code>、<code>write</code>等。这里的<code>0x80</code>只是告诉内核，我发起的异常是为了调用系统调用。那么具体是哪个系统调用，则需要使用系统调用号。</p>
+<p>系统调用号我们可以在<a href="https://github.com/apple-oss-distributions/xnu">xnu源码</a>的<code>bsd/kern/syscalls.master</code>文件中查看。例如：</p>
+<pre><code class="language-c">3	AUE_NULL	ALL	{ user_ssize_t read(int fd, user_addr_t cbuf, user_size_t nbyte); }
+4	AUE_NULL	ALL	{ user_ssize_t write(int fd, user_addr_t cbuf, user_size_t nbyte); }
+</code></pre>
+<p>就代表：<code>read</code>系统调用的系统调用号是3，<code>write</code>是4。</p>
+<p>也就是说，我们在使用<code>svc</code>进行系统调用的时候，通过某些途径让内核知道我们的系统调用号，就可以执行相应的系统调用了。</p>
+<p>但是，通过什么途径能让内核知道我们想要的系统调用号呢？不仅如此，正如上面的代码片段所显示的，大部分系统调用也都有参数，我们不能使用<code>bl</code>，只能使用<code>svc</code>，那又如何传参获取返回值呢？</p>
+<p>这些其实也是一种ABI，但这种ABI并没有稳定，也就是说并没有什么官方文档中规定了这种ABI。只是目前采用了这种ABI，之后会不会变并没有给出保证。</p>
+<p>macOS的xnu内核规定，系统调用号传入<code>r16</code>寄存器（位于xnu源码的<code>osfmk/arm64/proc_reg.h</code>的<code>ARM64_SYSCALL_CODE_REG_NUM</code>宏）。而参数传递则和普通函数的类似，传入对应的<code>r0</code>到<code>r7</code>的寄存器即可。</p>
+<p>因此，我们终于可以用C语言写一个Hello world了（源代码位于<a href="https://github.com/Evian-Zhang/learn-assembly-on-Apple-Silicon-Mac/blob/master/codes/13-hello-world.s">codes/13-hello-world.s</a>）：</p>
+<pre><code class="language-armasm">    .text
+    .globl  _main
+    .p2align    2
+_main:
+    sub    sp, sp, #16
+    stp    x29, x30, [sp]
+
+    mov    w0, #0                       ; fd: STDOUT_FILENO
+    adrp   x1, my_str@PAGE
+    add    x1, x1, my_str@PAGEOFF       ; cbuf: &quot;Hello world&quot;
+    mov    w2, #12                      ; nbyte: 12
+    mov    w16, #4                      ; Syscall number: write
+    svc    #0x80                        ; write(STDOUT_FILENO, &quot;Hello world&quot;, 12);
+
+    ldp    x29, x30, [sp]
+    add    sp, sp, #16
+    ret
+
+    .data
+my_str:
+    .asciz    &quot;Hello world&quot;
+</code></pre>
+<p>我们刚才提到，系统调用的ABI并不稳定。并且，系统调用号事实上也没有保证是不变的。因此，我们如果像上面一样，写出的代码就不具有可移植性。事实上，libc会对绝大多数常用的系统调用做一个封装，我们也可以直接调用libc对应的函数。也就是说，上面的<code>mov   #16, #4</code>和<code>svc    #0x80</code>两行，可以换成<code>bl    _write</code>，其中<code>_write</code>是libc提供的函数。</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="12-函数.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                            <a rel="next" href="14-汇编、链接与调试.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="12-函数.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                    <a rel="next" href="14-汇编、链接与调试.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+    </body>
+</html>

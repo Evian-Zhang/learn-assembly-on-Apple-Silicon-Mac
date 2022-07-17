@@ -1,0 +1,297 @@
+<!DOCTYPE HTML>
+<html lang="zh-Hans" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>底层的浮点数 - 在 Apple Silicon Mac 上入门汇编语言</title>
+        <!-- Custom HTML head -->
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <!-- MathJax -->
+        <script async type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="index.html">引言</a></li><li class="chapter-item expanded "><a href="1-底层的整数.html"><strong aria-hidden="true">1.</strong> 底层的整数</a></li><li class="chapter-item expanded "><a href="2-底层的浮点数.html" class="active"><strong aria-hidden="true">2.</strong> 底层的浮点数</a></li><li class="chapter-item expanded "><a href="3-硬件基础.html"><strong aria-hidden="true">3.</strong> 硬件基础</a></li><li class="chapter-item expanded "><a href="4-操作系统.html"><strong aria-hidden="true">4.</strong> 操作系统</a></li><li class="chapter-item expanded "><a href="5-第一个汇编程序.html"><strong aria-hidden="true">5.</strong> 第一个汇编程序</a></li><li class="chapter-item expanded "><a href="6-汇编语言初识.html"><strong aria-hidden="true">6.</strong> 汇编语言初识</a></li><li class="chapter-item expanded "><a href="7-汇编指令与寄存器.html"><strong aria-hidden="true">7.</strong> 汇编指令与寄存器</a></li><li class="chapter-item expanded "><a href="8-赋值指令.html"><strong aria-hidden="true">8.</strong> 赋值指令</a></li><li class="chapter-item expanded "><a href="9-基本的数据处理指令.html"><strong aria-hidden="true">9.</strong> 基本的数据处理指令</a></li><li class="chapter-item expanded "><a href="10-内存交互.html"><strong aria-hidden="true">10.</strong> 内存交互</a></li><li class="chapter-item expanded "><a href="11-跳转.html"><strong aria-hidden="true">11.</strong> 跳转</a></li><li class="chapter-item expanded "><a href="12-函数.html"><strong aria-hidden="true">12.</strong> 函数</a></li><li class="chapter-item expanded "><a href="13-系统调用.html"><strong aria-hidden="true">13.</strong> 系统调用</a></li><li class="chapter-item expanded "><a href="14-汇编、链接与调试.html"><strong aria-hidden="true">14.</strong> 汇编、链接与调试</a></li><li class="chapter-item expanded "><a href="15-与C语言交互.html"><strong aria-hidden="true">15.</strong> 与C语言交互</a></li><li class="chapter-item expanded "><a href="16-浮点数与SIMD.html"><strong aria-hidden="true">16.</strong> 浮点数与SIMD</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">在 Apple Silicon Mac 上入门汇编语言</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/Evian-Zhang/learn-assembly-on-Apple-Silicon-Mac" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="底层的浮点数"><a class="header" href="#底层的浮点数">底层的浮点数</a></h1>
+<p>之前我们讲了整数怎样在底层记录，那么这里将介绍如何在底层记录浮点数。所谓浮点数，我们可以理解成以下两种数：</p>
+<ul>
+<li>
+<p>小数</p>
+<p>也就是如0.5，3.1415926这样的小数</p>
+</li>
+<li>
+<p>大数</p>
+<p>非常大的数，一般用科学记数法表示，如114e514</p>
+</li>
+</ul>
+<p>我们可以发现，这两种数都可以表示为</p>
+<p>$$
+f\times 2^e
+$$</p>
+<p>的形式，其中\(-2&lt; f &lt;2\)，\(e\)为整数。例如，<strong>二进制小数</strong>11101.1101可以看作\(1.11011101\times 2^{4}\)，而0.001101可以看作\(1.101\times 2^{-3}\)。在术语里，我们称\(f\)为尾数，\(e\)为指数。</p>
+<p>根据这个发现，我们知道，任何数都可以唯一地表示成符号、尾数和指数的组合。因此，目前通用的浮点数算术标准<a href="https://standards.ieee.org/ieee/754/6210/">IEEE754</a>标准就规定了浮点数的存储方式为，存储其符号、尾数和指数的组合。其具体标准很枯燥，我们可以用一张图简单地说明一下：</p>
+<pre><code class="language-plaintext"> sign         exponent                          fraction
+  |              |                                  |
+ --- --------------------------- ---------------------------------------
+|   |                           |                                       |
+ --- --------------------------- ---------------------------------------
+</code></pre>
+<p>我们常用的浮点数类型包括：</p>
+<ul>
+<li>
+<p>单精度浮点型（<code>float</code>）</p>
+<p>长度为32位， 其中有23位尾数，8位指数</p>
+</li>
+<li>
+<p>双精度浮点型（<code>double</code>）</p>
+<p>长度为64位，其中有52位尾数，11位指数</p>
+</li>
+</ul>
+<p>这些标准乍看上去难以理解，令人头痛，那我们不妨直接来看一个浮点数常见的问题。</p>
+<h2 id="浮点数算术的精度问题"><a class="header" href="#浮点数算术的精度问题">浮点数算术的精度问题</a></h2>
+<p>我们有一个C程序：</p>
+<pre><code class="language-c">double a = 0.1;
+double end = 0.3;
+while (a != end) {
+   a += 0.1;
+}
+</code></pre>
+<p>这个程序的输出会是怎样的呢？将其编译并运行可以发现，这居然又停不下来了。这是为什么呢？</p>
+<p>要想一探究竟，我们可以编写一个辅助函数：</p>
+<pre><code class="language-c">void display_double_in_binary(double f) {
+   char *d = (char *)&amp;f;
+   for (int i = 0; i &lt; sizeof(f); i++) {
+      printf(&quot;%.2x &quot;, d[i] &amp; 0xff);
+   }
+   printf(&quot;\n&quot;);
+}
+</code></pre>
+<p>这个函数可以输出浮点数的二进制表示。具体的程序位于<a href="https://github.com/Evian-Zhang/learn-assembly-on-Apple-Silicon-Mac/blob/master/codes/2-floating-precision.c">codes/2-floating-precision.c</a>。</p>
+<p>我们通过这个辅助函数，可以看到：</p>
+<pre><code class="language-plaintext">Term	end = 0.300000	bin: 33 33 33 33 33 33 d3 3f
+Round 1	a = 0.100000	bin: 9a 99 99 99 99 99 b9 3f
+Round 2	a = 0.200000	bin: 9a 99 99 99 99 99 c9 3f
+Round 3	a = 0.300000	bin: 34 33 33 33 33 33 d3 3f
+</code></pre>
+<p><code>end</code>的16进制表示是<code>0x3fd3333333333333</code>，而当<code>a</code>加到0.3的时候，它的16进制表示是<code>0x3fd3333333333334</code>。这两者不一致，因此不会进入循环终止条件。</p>
+<p>我们上面提到，要想将一个浮点数存储在寄存器中，需要首先将其转化为二进制的小数。那么，0.1转化为二进制小数为0.0001100110011001101...，而0.3转化为二进制小数为0.01001100110011001101...。我们震惊地发现，十进制小数转化成的二进制小数居然不整。</p>
+<p>这下就能解释为什么这个程序停不下来了。由于转化的二进制小数不整，因此存储在寄存器中时，发生了截断，产生了一定的误差。那么，在进一步计算时，误差就会累积，从而几乎没有可能真正到达0.3。这就是浮点数算术的精度问题。</p>
+<p>这种精度问题在我们实际的生活中会遇到吗？下面，我就介绍一个在Dark Souls速通中被发现的一个<a href="https://wiki.speedsouls.com/darksouls:Meme_Roll">Meme Roll Glitch</a>（视频讲解可以看B站搬运的视频<a href="https://b23.tv/41QUQfU">《黑暗之魂》中“最疯狂”的skip是如何诞生的</a>的24:45秒开始）。</p>
+<p>在Dark Souls中，从高空坠落会受到伤害，当高度高于一定阈值时，人物会死亡。在游戏速通中，玩家希望通过一些地方的跳跃到达后期才能去的地区，从而绕过很多步骤，节省大量的时间。但是，这些跳跃往往高度都非常高，会造成角色的死亡，直接跳显然是不行的。在Meme Roll Glitch发现之后，这个问题终于得到了解决。</p>
+<p>提出这个Glitch的玩家发现，当角色的负重在25%与25.000088%之间时，角色可以在高空坠落的过程中不断地翻滚，从而利用翻滚的无敌帧避开坠落的伤害。但是，负重在游戏中的最小计量单位是0.1%，理论上不可能使角色的负重在这个范围内。这就需要浮点数算术的精度问题了。由于浮点数本身采用二进制小数进行存储，所以不可能精确等于其十进制数值。因此通过仔细地调整装备与耐力等级，不断利用浮点数算术的精度误差，最终能使角色处在这一负重范围内，最终实现无伤害坠落。</p>
+<h2 id="浮点数能建立全序关系吗"><a class="header" href="#浮点数能建立全序关系吗">浮点数能建立全序关系吗？</a></h2>
+<p>在一些现代编程语言中，编译器会很聪明地阻止我们干一些事。例如，如果我们想用Rust语言对浮点数的数组进行排序：</p>
+<pre><pre class="playground"><code class="language-rust  compile_fail"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let mut s = [1.0, -3.5, 4.7];
+s.sort();
+<span class="boring">}
+</span></code></pre></pre>
+<p>会发现编译不通过，提示&quot;the trait <code>Ord</code> is not implemented for <code>{float}</code>&quot;。这是为什么呢？要解释这一问题，我们不妨先了解一下IEEE754标准里几个特殊的常数（可以参考<a href="https://github.com/Evian-Zhang/learn-assembly-on-Apple-Silicon-Mac/blob/master/codes/2-special-numbers.c">codes/2-special-numbers.c</a>）。</p>
+<ul>
+<li>
+<p>零值</p>
+<p>之前我们提到，存储浮点数时会存储其符号信息。但是，其余数字的存储并不一定会像整数一样使用补码。事实上，在IEEE754标准里，有两个零值：<code>+0.0</code>与<code>-0.0</code>。</p>
+<p>零值存储的值是不同的：<code>+0.0</code>存储的值为<code>0x00000000</code>，<code>-0.0</code>存储的值为<code>0x00000080</code>。</p>
+<p>但是，在比较运算中，<code>+0.0</code>与<code>-0.0</code>是相等的。</p>
+</li>
+<li>
+<p><code>INFINITY</code></p>
+<p>代表无穷大， 有<code>+INFINITY</code>与<code>-INFINITY</code>两个值。</p>
+<p>一般可以通过<code>1.0/0.0</code>以及<code>1.0/-0.0</code>得到无穷大值。</p>
+<p>在比较运算中，<code>+INFINITY</code>大于所有除了其本身的值；<code>-INFINITY</code>小于所有除了其本身的值。</p>
+</li>
+<li>
+<p><code>NAN</code></p>
+<p>代表非数值。有<code>+NAN</code>和<code>-NAN</code>两个值。</p>
+<p>可以通过对<code>-1.0</code>开方等操作得到。</p>
+<p>其与任何数都不相等。也就是说，<code>NAN != NAN</code>，<code>-NAN != -NAN</code>。也无法进行比较，也就是说，<code>NAN</code>于任何数进行小于、大于的比较，返回结果都是<code>false</code>。</p>
+</li>
+</ul>
+<p>介绍了这些特殊的常数，那么，我们就可以解答为什么<code>f32</code>不满足<code>Eq</code>的trait了。</p>
+<p><code>Ord</code> trait，就是全序关系。集合\(X\)上可以建立全序关系，意思就是说：</p>
+<p>对于\(X\)中的元素\(a\), \(b\), \(c\)有：</p>
+<ul>
+<li>
+<p>反对称性</p>
+<p>如果\(a\leq b\)且\(b\leq a\)，则\(a=b\)</p>
+</li>
+<li>
+<p>传递性</p>
+<p>如果\(a\leq b\)且\(b\leq c\)，则\(a\leq c\)</p>
+</li>
+<li>
+<p>完全性</p>
+<p>对于\(X\)中的任意元素\(a\)和\(b\)，都有\(a\leq b\)或\(b\leq a\)</p>
+</li>
+</ul>
+<p>对于我们最常接触的整数来说，这些性质是非常显然的，因此整数可以建立全序关系。</p>
+<p>但是，对于我们刚刚提到的IEEE754定义的浮点数类型来说，由于<code>NAN</code>与任何数都不相等，因此浮点数不可以建立全序关系，从而不满足<code>Ord</code> trait。</p>
+<p>直观地，我们也可以看出来，<code>NAN</code>这样特殊的数，无法进行比较，从而如果出现在数组中，对其排序是没有意义的。</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="1-底层的整数.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                            <a rel="next" href="3-硬件基础.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="1-底层的整数.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                    <a rel="next" href="3-硬件基础.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+    </body>
+</html>

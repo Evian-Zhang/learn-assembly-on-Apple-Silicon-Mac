@@ -1,0 +1,393 @@
+<!DOCTYPE HTML>
+<html lang="zh-Hans" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>汇编、链接与调试 - 在 Apple Silicon Mac 上入门汇编语言</title>
+        <!-- Custom HTML head -->
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <!-- MathJax -->
+        <script async type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="index.html">引言</a></li><li class="chapter-item expanded "><a href="1-底层的整数.html"><strong aria-hidden="true">1.</strong> 底层的整数</a></li><li class="chapter-item expanded "><a href="2-底层的浮点数.html"><strong aria-hidden="true">2.</strong> 底层的浮点数</a></li><li class="chapter-item expanded "><a href="3-硬件基础.html"><strong aria-hidden="true">3.</strong> 硬件基础</a></li><li class="chapter-item expanded "><a href="4-操作系统.html"><strong aria-hidden="true">4.</strong> 操作系统</a></li><li class="chapter-item expanded "><a href="5-第一个汇编程序.html"><strong aria-hidden="true">5.</strong> 第一个汇编程序</a></li><li class="chapter-item expanded "><a href="6-汇编语言初识.html"><strong aria-hidden="true">6.</strong> 汇编语言初识</a></li><li class="chapter-item expanded "><a href="7-汇编指令与寄存器.html"><strong aria-hidden="true">7.</strong> 汇编指令与寄存器</a></li><li class="chapter-item expanded "><a href="8-赋值指令.html"><strong aria-hidden="true">8.</strong> 赋值指令</a></li><li class="chapter-item expanded "><a href="9-基本的数据处理指令.html"><strong aria-hidden="true">9.</strong> 基本的数据处理指令</a></li><li class="chapter-item expanded "><a href="10-内存交互.html"><strong aria-hidden="true">10.</strong> 内存交互</a></li><li class="chapter-item expanded "><a href="11-跳转.html"><strong aria-hidden="true">11.</strong> 跳转</a></li><li class="chapter-item expanded "><a href="12-函数.html"><strong aria-hidden="true">12.</strong> 函数</a></li><li class="chapter-item expanded "><a href="13-系统调用.html"><strong aria-hidden="true">13.</strong> 系统调用</a></li><li class="chapter-item expanded "><a href="14-汇编、链接与调试.html" class="active"><strong aria-hidden="true">14.</strong> 汇编、链接与调试</a></li><li class="chapter-item expanded "><a href="15-与C语言交互.html"><strong aria-hidden="true">15.</strong> 与C语言交互</a></li><li class="chapter-item expanded "><a href="16-浮点数与SIMD.html"><strong aria-hidden="true">16.</strong> 浮点数与SIMD</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">在 Apple Silicon Mac 上入门汇编语言</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/Evian-Zhang/learn-assembly-on-Apple-Silicon-Mac" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="汇编链接与调试"><a class="header" href="#汇编链接与调试">汇编、链接与调试</a></h1>
+<p>在这一章中，我们主要介绍的是汇编、链接与调试的全过程的原理。</p>
+<h2 id="汇编与链接"><a class="header" href="#汇编与链接">汇编与链接</a></h2>
+<p>在<a href="./5-%E7%AC%AC%E4%B8%80%E4%B8%AA%E6%B1%87%E7%BC%96%E7%A8%8B%E5%BA%8F.html">第一个汇编程序</a>中，我们介绍了怎样由汇编代码生成可执行程序。它主要包括两个阶段：</p>
+<p>汇编：</p>
+<pre><code class="language-bash">as foo.s -o foo.o
+</code></pre>
+<p>链接：</p>
+<pre><code class="language-bash">ld foo.o -lSystem -L `xcrun --show-sdk-path -sdk macosx`/usr/lib -o foo
+</code></pre>
+<p>在汇编程序生成可执行程序的过程中，为什么需要分为汇编和链接两步呢？这两步分别是做什么的呢？</p>
+<p>在Unix刚刚发明的时代，开发者在编写软件时有一个理念：一个程序只做一件事。在这里，汇编器的作用实际上是将汇编代码<code>foo.s</code>转化为机器指令，生成的<code>foo.o</code>被称为目标文件（Object file），其中包含的大部分机器指令实际上和可执行程序<code>foo</code>中包含的一样。也就是说，<code>foo.o</code>中也存在<code>__text</code>节，也存在<code>__data</code>节。但是，我们知道，在编写实际的大型软件的过程中，几乎不存在所有代码都在一个文件中的情况。往往一个大型项目会包含许多项目源文件。那么汇编器将每一个源文件都翻译为存储有相应机器指令的目标文件，可是最终的可执行文件只有一个，所以这里就需要链接器。链接器分析每一个目标文件的相应的段和节，将其提取、拼接，最终生成一个可执行文件。</p>
+<p>这就是汇编和链接的一个大致的过程，汇编将汇编语句翻译为机器指令，链接将多个目标文件合并为一个可执行程序。但是，这其中实际上还有非常多的问题，我们将在这章中解释。</p>
+<p>这章的例子包含三个文件：<a href="https://github.com/Evian-Zhang/learn-assembly-on-Apple-Silicon-Mac/blob/master/codes/14-foo1.s">codes/14-foo1.s</a>、<a href="https://github.com/Evian-Zhang/learn-assembly-on-Apple-Silicon-Mac/blob/master/codes/14-foo2.s">codes/14-foo2.s</a>和<a href="https://github.com/Evian-Zhang/learn-assembly-on-Apple-Silicon-Mac/blob/master/codes/14-main.s">codes/14-main.s</a>。前两者分别定义了函数<code>bar1</code>和<code>bar2</code>，这两个函数分别会输出&quot;This is bar1 in foo1&quot;和&quot;This is bar2 in foo2&quot;。在main中调用了这两个函数。</p>
+<h2 id="静态链接与动态链接"><a class="header" href="#静态链接与动态链接">静态链接与动态链接</a></h2>
+<h3 id="静态链接"><a class="header" href="#静态链接">静态链接</a></h3>
+<p>刚刚我们提到，链接器可以将多个目标文件合并生成一个可执行程序。在实际软件开发的过程中，我们往往会用到别人编写的库，我们也有可能自己编写一个库，给别人使用。那么，按照上面的逻辑，我们编写的库实际上也可以看作一种特殊的“目标文件”，在给别人使用的过程中，别人通过链接器，将我们使用的库一起组合生成一个可执行文件。这就是「静态链接」的概念。</p>
+<p>具体而言，针对本章的例子，我们使用汇编器将<code>14-foo1.s</code>和<code>14-foo2.s</code>分别翻译为对应的目标文件<code>14-foo1.o</code>和<code>14-foo2.o</code>之后，可以使用</p>
+<pre><code class="language-bash">ar rcs lib14-foo-static.a 14-foo1.o 14-foo2.o
+</code></pre>
+<p>这个命令会将刚刚生成的这两个目标文件合并为静态库<code>lib14-foo-static.a</code>。</p>
+<p>我们在<code>14-main.s</code>中使用了这个库，所以在把它翻译为<code>14-main.o</code>之后，我们要在链接时把这个库一块儿链接上：</p>
+<pre><code class="language-bash">ld -L. 14-main.o -l14-foo-static -lSystem -L `xcrun --show-sdk-path -sdk macosx`/usr/lib -o 14-main-static
+</code></pre>
+<p>可以发现，它主要多了<code>-L.</code>和<code>-l14-foo-static</code>这两个选项。<code>-l14-foo-static</code>选项会使链接器在搜索路径下搜索<code>lib14-foo-static.a</code>文件，找到后一起链接；<code>-L.</code>则将当前目录添加到搜索路径下，使链接器可以找到我们刚刚生成的静态库。</p>
+<p>对于这种静态链接生成的程序，我们可以使用</p>
+<pre><code class="language-bash">otool -tvV 14-main-static
+</code></pre>
+<p>反汇编。通过反汇编，我们可以发现，静态链接就是直接把库的代码放到可执行程序中，我们在<code>14-main-static</code>这个可执行程序中找到了<code>bar1</code>和<code>bar2</code>的代码：</p>
+<p><img src="./assets/14-otool-static.png" alt="otool static" /></p>
+<h3 id="动态链接"><a class="header" href="#动态链接">动态链接</a></h3>
+<p>我们在使用静态链接的过程中，往往会发现一些问题：</p>
+<ul>
+<li>
+<p>重复的库占用内存、硬盘</p>
+<p>有些库非常常用，许多开发者写的程序都需要这些库。如果这些库本身的体积很大，而静态链接会把这个库链接到每一个程序中，就会导致这些程序都存在极为庞大的重复代码。无论是存储在硬盘中，还是载入到内存里，都会占用很大的空间。我们自己写的库有可能很小，只有几KB，但是像Electron这种大型的GUI框架，也有不少人吐槽其体积问题（<a href="https://github.com/electron/electron/issues/673">electron/electron #673</a>）。</p>
+</li>
+<li>
+<p>更新困难</p>
+<p>如果想要给用户更新自己编写的程序，那么最简单的方法就是把新编译的程序替换旧编译的程序。可是对于大型的应用来说，一次更新就需要用户下载几百M甚至几个G的内容，会很麻烦。</p>
+</li>
+</ul>
+<p>针对这些问题，我们拥有了动态链接技术。不过这里要指出，动态链接并不是一定比静态链接好。只是针对不同的情况，可以采取不同的策略。</p>
+<p>动态链接的思想也很直接：我们将库变成独立的动态链接库，不再直接放到可执行程序里。如果多个程序用到了同一份库，那我们只需要一个动态链接库就行，让多个程序链接这个库。在更新软件时，如果需要更新的内容是动态链接库里的，那就直接把更新的动态链接库发送给用户，不需要改主程序。</p>
+<p>具体而言，我们得到目标文件<code>14-foo1.o</code>和<code>14-foo2.o</code>之后，将其链接为动态链接库：</p>
+<pre><code class="language-bash">ld 14-foo1.o 14-foo2.o -lSystem -L `xcrun --show-sdk-path -sdk macosx`/usr/lib -dylib -o lib14-foo-dynamic.dylib
+</code></pre>
+<p>也就是说，在链接时增加<code>-dylib</code>选项。</p>
+<p>在生成最终可执行程序时，和静态链接类似：</p>
+<pre><code class="language-bash">ld -L. 14-main.o -l14-foo-dynamic -lSystem -L `xcrun --show-sdk-path -sdk macosx`/usr/lib -o 14-main-dynamic
+</code></pre>
+<p>同样是加<code>-L.</code>和<code>-l14-foo-dynamic</code>，这个<code>-l</code>选项会同时搜索<code>.a</code>和<code>.dylib</code>。</p>
+<p>值得指出的是，正如静态链接和动态链接的名字所指示的，静态链接就是在编译时将库的代码直接放到可执行程序内部，而动态链接是在执行可执行程序的过程中，将动态链接库载入内存。如果有多个程序动态链接到了同一个库，那么在载入这些程序到内存的过程中，会将动态链接库所在的同一张物理页映射到这些程序的进程空间中。也就是说，这些进程的内存空间实际上有共同的一部分物理内存，这部分就是动态链接库所在的物理页。这种方式就可以减小内存占用，同时也是一些现代的处理器层面的攻击手段（如熔断、幽灵漏洞等）得以攻击的途径。</p>
+<h3 id="静态链接程序与动态链接程序"><a class="header" href="#静态链接程序与动态链接程序">静态链接程序与动态链接程序</a></h3>
+<p>与静态链接（static linking）、动态链接（dynamic linking）这种链接的方式对应的，也有静态链接的程序（statically-linked binary）与动态链接的程序（dynamically-linked binary）。静态链接的程序就是指不依赖任何动态链接库的程序，其余的程序则是动态链接的程序。</p>
+<p>我们平常编写的程序都是动态链接的程序。一个最普通的Hello world的程序，依赖什么动态库呢？最主要的，还是依赖libc。之前我们提到，大部分常用的系统调用都有libc的封装，而我们常用的一些C语言的库函数如<code>strlen</code>、<code>fopen</code>等，也都是由libc提供。我们在链接时加上的<code>-lSystem</code>实际上就是表明我们的程序动态依赖libc库。</p>
+<p>macOS一般不支持静态链接的程序。在理论上，静态链接和动态链接的汇编程序及C程序实际上是需要startup codes的，一般被称为C Runtime，简写为crt。crt是用来做什么的呢？我们知道，<code>main</code>函数可以用参数：</p>
+<pre><code class="language-c">int main(int argc, char **argv);
+</code></pre>
+<p>这些参数承载命令汗参数相关的信息。这些参数的传递实际上就是由crt处理的。除此之外，crt也负责TLS的初始化等工作。因此，在汇编层面来看，静态链接的程序的开始并不是<code>main</code>函数，而是crt的开始，一般为<code>start</code>函数。我们可以简单看一下在Linux系统上，<code>start</code>函数是怎么调用<code>main</code>函数的：</p>
+<p>对于glibc来说，我们可以在<code>sysdeps/generic/libc_start_call_main.h</code>文件中看到：</p>
+<pre><code class="language-c">_Noreturn static __always_inline void
+__libc_start_call_main (int (*main) (int, char **, char ** MAIN_AUXVEC_DECL),
+                        int argc, char **argv MAIN_AUXVEC_DECL)
+{
+  exit (main (argc, argv, __environ MAIN_AUXVEC_PARAM));
+}
+</code></pre>
+<p>类似地，对于LLVM提供的libc来说，我们可以在<code>libc/loader/linux/x86_64/start.cpp</code>文件中看到：</p>
+<pre><code class="language-c">extern &quot;C&quot; void _start() {
+  // ...
+  __llvm_libc::syscall(SYS_exit,
+                       main(args-&gt;argc, reinterpret_cast&lt;char **&gt;(args-&gt;argv),
+                            reinterpret_cast&lt;char **&gt;(env_ptr)));
+}
+</code></pre>
+<p>在将命令行参数传递给<code>main</code>函数之后，使用其返回值作为<code>exit</code>的参数进行退出。</p>
+<h2 id="调试"><a class="header" href="#调试">调试</a></h2>
+<p>除了汇编、链接之外，与我们开发软件息息相关的就是调试技术了。所谓的调试，就是使用调试器监控进程的运行，可以设置断点、单步调试等等。</p>
+<p>对于本章的例子，我们在生成<code>14-main-static</code>可执行程序之后，可以使用LLDB对其进行调试：</p>
+<pre><code class="language-bash">lldb ./14-main-static
+</code></pre>
+<p>我们可以首先使用</p>
+<pre><code class="language-bash">(lldb) breakpoint set --name main
+</code></pre>
+<p>设置断点。</p>
+<p>然后使用</p>
+<pre><code class="language-bash">(lldb) run
+</code></pre>
+<p>运行程序。</p>
+<p>当程序执行到<code>main</code>函数开头的时候，就会自动暂停：</p>
+<p><img src="./assets/14-lldb-breakpoint.png" alt="breakpoint" /></p>
+<p>随后，我们可以使用</p>
+<pre><code class="language-bash">(lldb) register read
+</code></pre>
+<p>查看此时所有寄存器的值。我们也可以使用别的指令进行别的运行时操作。</p>
+<p>最后，使用<kbd>ctrl</kbd>+<kbd>D</kbd>退出LLDB。</p>
+<p>那么，调试是怎么实现的呢？我们首先来看看调试时设置断点的过程：</p>
+<ol>
+<li>调试器进程对被调试进程特定指令地址设置断点</li>
+<li>被调试进程执行到断点时，暂停执行</li>
+<li>控制权交还调试器进程</li>
+</ol>
+<p>在操作系统层面，这个是由<code>ptrace</code>系统调用实现的。调试器进程通过这个系统调用，告诉内核被调试的进程，以及一个中断信号。如果被调试进程发出该中断信号，则内核将控制权交给调试器进程。</p>
+<p>那如何使被调试进程发出中断信号呢？这需要从处理器层面进行考虑。<a href="https://developer.arm.com/documentation/102140/0200/Breakpoints">官方文档</a>中一共给出了两种方案：</p>
+<ul>
+<li>
+<p>软件断点</p>
+<p>被调试进程在断点位置的指令被替换为<code>bkpt</code>指令。当执行到该指令时，会发出特定的中断信号。</p>
+</li>
+<li>
+<p>硬件断点</p>
+<p>AArch64架构有若干硬件调试寄存器。当执行的指令满足某些设定的条件时（如指令地址等于存储在调试寄存器中的值），发出特定的中断信号。</p>
+</li>
+</ul>
+<h2 id="符号"><a class="header" href="#符号">符号</a></h2>
+<p>我们介绍完了静态链接、动态链接与调试之后，有一个问题其实一直被我们掩盖了：这些过程中是如何解析符号的？</p>
+<ul>
+<li>在静态链接时，<code>14-main.o</code>需要<code>bar1</code>和<code>bar2</code>这两个函数，但是在生成这个目标文件的时候，我们并不知道这两个函数的地址。因此在编码相应<code>bl</code>指令的时候，其操作数必然不能确定。链接器在将目标文件合并生成可执行文件时，需要将对这两个函数的调用处的编码修改为对应的正确的地址。</li>
+<li>在生成动态链接的程序时，<code>14-main-dynamic</code>可执行程序也不知道<code>bar1</code>和<code>bar2</code>的地址，我们在将程序载入内存时，动态链接器才可以把相应的地址告诉进程。</li>
+<li>在调试程序时，我们想在<code>main</code>函数下断点。可是我们如何知道这个可执行程序中哪一个地址是<code>main</code>函数的地址？</li>
+</ul>
+<p>这三个问题的核心，就是我们这一节需要讲的「符号」（Symbol）。</p>
+<h3 id="符号表"><a class="header" href="#符号表">符号表</a></h3>
+<p>我们在汇编程序中，写的绝大部分标签（Label），在生成目标文件时，都会在二进制程序的符号表中存储相应的符号。我们可以使用</p>
+<pre><code class="language-bash">nm 14-main.o
+</code></pre>
+<p>查看二进制程序中的符号：</p>
+<p><img src="./assets/14-nm-main.png" alt="nm main" /></p>
+<p>可以看到，<code>bar1</code>和<code>bar2</code>确实<strong>以字符串的形式</strong>存储在了二进制程序的符号表中。</p>
+<h3 id="重定位"><a class="header" href="#重定位">重定位</a></h3>
+<p>在生成目标文件时，我们会将所有在汇编时无法确认地址的符号（包括不定义在这个文件中的函数，以及我们之前提到的<code>@PAGE</code>、<code>@PAGEOFF</code>等等）放到重定位表中。我们在使用<code>nm</code>查看符号表的时候，前面的&quot;U&quot;就代表这个符号目前无法确认地址，需要重定位。在静态链接的过程中，链接器会查看所有被链接的目标文件的符号。例如，会根据<code>14-main.o</code>的重定位表，得知其需要<code>bar1</code>和<code>bar2</code>这两个符号。在得知<code>lib14-foo-static.a</code>这个库中提供了<code>bar1</code>和<code>bar2</code>这两个符号之后，就可以使用正确的地址去修改在<code>14-main.o</code>中的函数调用语句，将其地址替换为正确的地址。</p>
+<h3 id="动态绑定"><a class="header" href="#动态绑定">动态绑定</a></h3>
+<p>与静态链接时的重定位类似，我们是不是可以用同样的手法解决动态链接时的符号（被称为间接符号）解析呢？也就是说，我们可不可以这样：对于静态链接时没找到的符号，生成一个类似重定位表的东西，告诉动态链接器哪个地址的指令需要重写。在载入内存后，动态链接器解析符号然后重写地址。</p>
+<p>这么做理论上时可以的，但是我们知道，在静态链接时花多少时间都是无所谓的，毕竟都只是花开发者的时间；但是在动态链接时，也就是执行程序的时候，每一分每一秒都花的是用户的时间。因此，我们应该尽可能地减少动态链接所需的时间。按上述的方案，有几个问题：</p>
+<ul>
+<li>
+<p>多处指令调用同一个外部函数</p>
+<p>如果有多个指令都调用了同一个外部函数（比如<code>printf</code>），那么按上述方案，动态链接器需要使用同一个地址重写这么多指令，造成冗余。</p>
+</li>
+<li>
+<p>不会被执行到的指令调用外部函数</p>
+<p>有一些指令只是被静态链接到了可执行程序中，但实际上是不会被执行到的。那么如果这些指令也被重写，则会造成冗余。</p>
+</li>
+</ul>
+<p>为了解决这种情况，我们引入了延迟绑定和GOT表。</p>
+<h4 id="动态绑定过程"><a class="header" href="#动态绑定过程">动态绑定过程</a></h4>
+<p>以本章的例子为例，在生成<code>14-main-dynamic</code>可执行程序的时候，实际生成的程序可以粗略地理解成（以对<code>bar1</code>的调用为例，省略对<code>bar2</code>的调用）：</p>
+<pre><code class="language-armasm">    .section __TEXT, __text
+    .globl  _main
+    .p2align    2
+_main:
+    sub    sp, sp, #16
+    stp    x29, x30, [sp]
+    bl     bar1_stub
+    mov    w0, #0
+    ldp    x29, x30, [sp]
+    add    sp, sp, #16
+    ret
+
+    .section __TEXT, __text
+    .p2align bar1_stub
+bar1_stub:
+    adrp   x16, bar1_sym@GOTPAGE
+    add    x16, x16, bar1_sym@GOTPAGEOFF
+    br     x16
+
+    .section __DATA, __got
+    .p2align 4
+bar1_sym:
+    .quad some_addr
+</code></pre>
+<p>链接器首先会在<code>__TEXT</code>段的<code>__stubs</code>节生成若干个桩函数，在原来对<code>bar1</code>、<code>bar2</code>的调用处的指令，实际上被替换为了对对应的桩函数的调用。</p>
+<p>在桩函数中，会间接跳转到某些地址上。这些地址一般存储在<code>__DATA</code>段的<code>__got</code>节，或者存在<code>__la_symbol_ptr</code>等节中。一般而言，这节中的这些地址，一开始是动态链接器的某些函数的地址。因此在第一次调用到桩函数的过程中，会调用到动态链接器的函数。动态链接器此时解析相应的符号，然后把<code>__got</code>节（或者别的类似的节）中的地址重写为真正的解析到的函数的地址。</p>
+<p>通过上述的方案，在第二次再调用到同一个桩函数时，由于其存储在<code>__got</code>节的地址已经被改写为正确的地址，就不再需要动态链接器的参与；同时，由于只在第一次调用时才会用动态链接器解析符号、重写地址，因此避免了不会被调用到的指令产生冗余解析的问题。</p>
+<h4 id="静态链接时的动态链接库"><a class="header" href="#静态链接时的动态链接库">静态链接时的动态链接库</a></h4>
+<p>通过上述的过程，我们可以发现，静态链接生成<code>14-main-dynamic</code>时，似乎不需要动态链接库。但是我们给出的静态链接的过程中，依然需要在命令行里给出相应的动态链接库。这是为什么呢？Stack Overflow上也有人提出了类似的问题：<a href="https://stackoverflow.com/q/48770958/10005095">why do we need the shared library during compile time</a>。</p>
+<p>事实上，在静态链接时提供动态链接库主要有两个原因：</p>
+<ul>
+<li>
+<p>在生成的可执行程序中存储动态链接库的名字</p>
+<p>在静态链接时，对于该可执行程序执行时需要的动态链接库，我们显式地给出来，链接器会把这些动态链接库的名字存储在可执行程序内。在执行时，动态链接器就可以根据这些名字，直接将相应的动态链接库载入内存。</p>
+<p>我们可以通过</p>
+<pre><code class="language-bash">otool -L 14-main-dynamic
+</code></pre>
+<p>查看一个动态链接的程序内记录的动态链接库的名字。</p>
+</li>
+<li>
+<p>确保所有符号都会被解析</p>
+<p>如果有的符号在动态链接库中也不存在，那么执行时动态链接器就没办法解析相应的符号，造成崩溃。因此，在链接时可以直接检查是不是所有没定义的符号都在动态链接库中，从而减小开发者失误的可能性。</p>
+</li>
+</ul>
+<p>因此，我们可以发现，在静态链接时，实际上只需要给出动态链接库的名字以及动态链接库提供的符号。因此，在最近的新版本的macOS中，所有的系统库都采用了<code>.tbd</code>文件的形式存储在硬盘中。这些<code>.tbd</code>文件只含有动态链接库的名字和其中的符号，不含有实际指令。通过这种方案，减小了SDK在硬盘中的体积，也减小了系统库被逆向的可能性。</p>
+<h3 id="调试符号"><a class="header" href="#调试符号">调试符号</a></h3>
+<p>在使用调试器进行调试的时候，我们就可以根据符号表中的符号进行调试。这就是为什么我们可以在下断点的时候直接说「对<code>main</code>函数下断点」而不需要给出具体的地址。</p>
+<p>值得指出，现在的调试技术非常强大，因此除了符号表以外还会有很多额外的信息。在macOS上，如果我们使用C语言等高级语言进行编译时指定了生成调试文件的选项，就会产生一个<code>.dSYM</code>的文件。文件中会以DWARF格式存储我们所需要的调试信息。更详细的内容可以看Apple WWDC中的Session <a href="https://developers.apple.com/videos/play/wwdc2021/10211/">Symbolication: Beyond the basics</a>。</p>
+<h3 id="可见性"><a class="header" href="#可见性">可见性</a></h3>
+<p>在开始的时候我提到，绝大多数我们写的标签都会变成符号存储在二进制程序中。是不是所有的标签都会变成符号呢？事实上，在链接器层面，维护了一个基本的访问控制方案。</p>
+<ul>
+<li>
+<p>所有以<code>L</code>或<code>l</code>开头的标签</p>
+<p>这一部分标签将不会出现在符号表中。一般我们在控制语句中的标签以及一些字符串常量的标签都会采用此种形式。（这个规定我并没有找到实际的文档，只在LLVM的源码中找到了对应的检查：<code>lld/MachO/SyntheticSections.cpp</code>的<code>SymtabSection::finalizeContents()</code>函数）</p>
+</li>
+<li>
+<p>其它不用<code>.globl</code>声明的标签</p>
+<p>这一部分标签将会以局部符号的形式出现在符号表中。这一部分符号对于其它目标文件是不可见的。也就是说，如果我们不以<code>.globl</code>标记<code>bar1</code>和<code>bar2</code>，我们在静态链接时是无法正确链接的。</p>
+</li>
+<li>
+<p>以<code>.globl</code>声明的标签</p>
+<p>这一部分标签会以全局符号的形式出现在符号表中，可以被其它目标文件中的未定义符号解析。</p>
+</li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="13-系统调用.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                            <a rel="next" href="15-与C语言交互.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="13-系统调用.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                    <a rel="next" href="15-与C语言交互.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+    </body>
+</html>

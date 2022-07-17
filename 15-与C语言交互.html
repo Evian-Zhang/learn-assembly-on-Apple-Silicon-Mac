@@ -1,0 +1,238 @@
+<!DOCTYPE HTML>
+<html lang="zh-Hans" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>与C语言交互 - 在 Apple Silicon Mac 上入门汇编语言</title>
+        <!-- Custom HTML head -->
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <!-- MathJax -->
+        <script async type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="index.html">引言</a></li><li class="chapter-item expanded "><a href="1-底层的整数.html"><strong aria-hidden="true">1.</strong> 底层的整数</a></li><li class="chapter-item expanded "><a href="2-底层的浮点数.html"><strong aria-hidden="true">2.</strong> 底层的浮点数</a></li><li class="chapter-item expanded "><a href="3-硬件基础.html"><strong aria-hidden="true">3.</strong> 硬件基础</a></li><li class="chapter-item expanded "><a href="4-操作系统.html"><strong aria-hidden="true">4.</strong> 操作系统</a></li><li class="chapter-item expanded "><a href="5-第一个汇编程序.html"><strong aria-hidden="true">5.</strong> 第一个汇编程序</a></li><li class="chapter-item expanded "><a href="6-汇编语言初识.html"><strong aria-hidden="true">6.</strong> 汇编语言初识</a></li><li class="chapter-item expanded "><a href="7-汇编指令与寄存器.html"><strong aria-hidden="true">7.</strong> 汇编指令与寄存器</a></li><li class="chapter-item expanded "><a href="8-赋值指令.html"><strong aria-hidden="true">8.</strong> 赋值指令</a></li><li class="chapter-item expanded "><a href="9-基本的数据处理指令.html"><strong aria-hidden="true">9.</strong> 基本的数据处理指令</a></li><li class="chapter-item expanded "><a href="10-内存交互.html"><strong aria-hidden="true">10.</strong> 内存交互</a></li><li class="chapter-item expanded "><a href="11-跳转.html"><strong aria-hidden="true">11.</strong> 跳转</a></li><li class="chapter-item expanded "><a href="12-函数.html"><strong aria-hidden="true">12.</strong> 函数</a></li><li class="chapter-item expanded "><a href="13-系统调用.html"><strong aria-hidden="true">13.</strong> 系统调用</a></li><li class="chapter-item expanded "><a href="14-汇编、链接与调试.html"><strong aria-hidden="true">14.</strong> 汇编、链接与调试</a></li><li class="chapter-item expanded "><a href="15-与C语言交互.html" class="active"><strong aria-hidden="true">15.</strong> 与C语言交互</a></li><li class="chapter-item expanded "><a href="16-浮点数与SIMD.html"><strong aria-hidden="true">16.</strong> 浮点数与SIMD</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">在 Apple Silicon Mac 上入门汇编语言</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/Evian-Zhang/learn-assembly-on-Apple-Silicon-Mac" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="与c语言交互"><a class="header" href="#与c语言交互">与C语言交互</a></h1>
+<p>现代化的大型项目往往是由多种语言混合编写而成的。我第一次了解到这个知识的时候，觉得这件事是那么的理所当然，又那么的匪夷所思。不同的语言之间，是怎么互相调用的呢？</p>
+<p>事实上，现在最优雅的方法，是多进程模型。也就是说，一个语言编写一个独立的程序，然后使用进程间通信、HTTP通信等方案，通过数据交流实现函数的调用。</p>
+<p>但是，这种方案在进程之间进行数据交换，必然会带来不小的性能开销。如果追求极致的性能，我们可以考虑将高级语言编译出的目标文件链接为同一个可执行文件，也就是本章讲的方案。</p>
+<h2 id="目标文件链接"><a class="header" href="#目标文件链接">目标文件链接</a></h2>
+<p>我们知道，无论是使用什么编译型语言，最终生成的永远是一个含有机器指令的可执行程序。在二进制层面，这些语言之间是没有本质区别的。因此，我们也可以使用在上一章所讲的方法，将不同语言生成的目标文件（一般来说，高级语言会支持生成动态链接库或者静态链接库）进行链接，最终生成一个二进制程序。在本章中，就以C语言文件和汇编语言文件互相调用为例。</p>
+<p>通过这种方式的链接，我们需要注意什么呢？</p>
+<h3 id="abi"><a class="header" href="#abi">ABI</a></h3>
+<p>首先，是ABI兼容性。我们之前提到过，不同的编程语言的ABI不同。因此，为了实现正确的调用，应当统一ABI。也就是说，两个语言互相调用的函数应该是ABI一致的。现在大部分编程语言的做法，就是将这些函数的ABI统一为平台上C语言的ABI。</p>
+<p>在我们的例子中，C语言与汇编语言互相调用，其ABI是一致的，所以不需要额外的操作。对于C++来说，<code>extern &quot;C&quot;</code>就是表明后面的函数是C的ABI。</p>
+<p>尽管ABI一致，这里还需要指出的是，在汇编语言层面，我们操作数据的时候需要知道数据宽度，也就是4字节、8字节等。在C语言中，我们用<code>int</code>、<code>char</code>等来表示变量的类型，间接地规定了数据宽度。在Apple Silicon平台的C语言实现中，我们常见的变量类型的宽度为：</p>
+<ul>
+<li><code>bool</code>：1字节</li>
+<li><code>char</code>：1字节</li>
+<li><code>short</code>：2字节</li>
+<li><code>int</code>：4字节</li>
+<li><code>long</code>：8字节（这里注意需要和汇编语言层面的<code>.long</code>区别，后者表示4字节宽度）</li>
+<li><code>long long</code>：8字节</li>
+</ul>
+<h3 id="命名修饰"><a class="header" href="#命名修饰">命名修饰</a></h3>
+<p>除了ABI需要保持一致，我们之前提到，在链接的过程中，链接器是通过符号名来解析函数的。我们知道，在汇编语言中，符号名就是函数名。那么，在高级语言中，符号名是不是就是函数名呢？答案是否定的。为什么呢？</p>
+<p>在高级语言中，往往会有很多特性。例如，函数的名称可以包含Unicode字符；又比如说，C++的函数支持重载。也就是说，同一个函数名可以有多个函数实现，通过函数签名的不同来区分函数。但是在二进制层面，一个符号只能对应一个函数。因此，在高级语言生成二进制程序的过程中，存在一个「命名修饰」（Name Mangling）阶段。</p>
+<p>所谓的命名修饰，就是将函数名通过不同的规则转变为相应的符号名。在macOS平台上，C语言的函数名通过在前面加上<code>_</code>生成符号名。例如，C语言中的<code>foo</code>函数，其对应的符号名为<code>_foo</code>。我们在汇编语言中调用C语言中定义的<code>foo</code>函数时，就需要使用<code>bl    _foo</code>。</p>
+<p>同理，在C语言中调用汇编语言时，需要去除前面的<code>_</code>。例如，我们在汇编语言中编写了一个函数供C语言调用，因此，我们需要将其命名为<code>_</code>开头的标签，如<code>_bar</code>。在C语言中，我们就可以直接使用<code>bar</code>作为函数名调用函数。</p>
+<h2 id="内联汇编"><a class="header" href="#内联汇编">内联汇编</a></h2>
+<p>除了将不同语言生成的目标文件链接为一个可执行程序之外，大部分的高级语言都支持「内联汇编」（Inline Assembly）功能。以C语言为例，C语言的标准中并没有内联汇编功能，而大部分C编译器，如GCC（<a href="https://gcc.gnu.org/onlinedocs/gcc/Using-Assembly-Language-with-C.html">How to Use Inline Assembly Language in C Code</a>）、Clang（<a href="https://clang.llvm.org/compatibility.html#inline-asm">Inline assembly</a>）等，都有内联汇编的功能扩展。</p>
+<p>最简单的，我们可以用<code>asm</code>关键字标记一条汇编语句：</p>
+<pre><code class="language-c">asm(&quot;mov    x0, #0&quot;);
+</code></pre>
+<p>如果需要和C语言中的变量进行交互，我们就需要使用更复杂的语句。以<code>swap</code>函数为例（完整代码位于<a href="https://github.com/Evian-Zhang/learn-assembly-on-Apple-Silicon-Mac/blob/master/codes/15-swap.c">codes/15-swap.c</a>）：</p>
+<pre><code class="language-c">int swap(int *a, int *b) {
+    int sum;
+    asm(
+        &quot;ldr    w9, [%1]\n\t&quot;
+        &quot;ldr    w10, [%2]\n\t&quot;
+        &quot;str    w9, [%2]\n\t&quot;
+        &quot;str    w10, [%1]\n\t&quot;
+        &quot;add    w9, w9, w10\n\t&quot;
+        &quot;str    w9, %0&quot;
+        : &quot;=m&quot; (sum)
+        : &quot;r&quot; (a), &quot;r&quot; (b)
+        : &quot;w9&quot;, &quot;w10&quot;
+    );
+    return sum;
+}
+</code></pre>
+<p>这个函数做了两件事：首先，将<code>a</code>和<code>b</code>指向的值互换；其次，将两者值相加作为函数的返回值。</p>
+<p>我们可以看到，在<code>asm</code>开头的内联汇编代码有四个部分，分别用<code>:</code>分隔。这四个部分分别被称作：</p>
+<ol>
+<li>汇编模板</li>
+<li>输出操作数</li>
+<li>输入操作数</li>
+<li>保留寄存器</li>
+</ol>
+<p>第一个部分，被称作汇编模板。其可以包含多条汇编语句，每条汇编语句之间用<code>\n\t</code>分隔。我们可以注意到，除了我们正常使用到的汇编指令、寄存器之外，还有<code>%0</code>、<code>%1</code>这样的符号。这种符号会按顺序索引输出操作数和输入操作数。例如，我们例子中有1个输出操作数，2个输入操作数，那么<code>%0</code>就索引第一个输出操作数，<code>%1</code>索引第一个输入操作数，<code>%2</code>索引第二个输入操作数。在操作数前的<code>r</code>和<code>m</code>分别表示用寄存器还是内存替代。例如，<code>&quot;r&quot; (a)</code>替代<code>%1</code>后，会在<code>%1</code>的区域直接使用某些寄存器，如<code>ldr    w9, [w10]</code>；<code>&quot;m&quot; (sum)</code>则会使用一个内存地址替代<code>%0</code>，例如在<code>%0</code>的位置被替换为<code>[x12]</code>。</p>
+<p>第二个部分为输出操作数，第三个部分为输入操作数。以<code>r</code>、<code>m</code>表示变量是存储在寄存器中还是存储在内存中，在输出操作数中，如果以<code>=</code>为前缀，则说明这个变量只被写入，不被读出；以<code>+</code>为前缀，则说明这个变量在内联汇编中既被写入也被读出。</p>
+<p>第四个部分为保留寄存器。由于我们在内联汇编中使用了<code>w9</code>、<code>w10</code>作为临时存储值的寄存器，所以我们不希望在这个函数内部有别的地方使用这个寄存器，因此我们在这个部分声明了这两个寄存器，这样的话编译器就不会在这个函数内使用这两个寄存器来存储别的变量的值，就不会发生意外。</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="14-汇编、链接与调试.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                            <a rel="next" href="16-浮点数与SIMD.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="14-汇编、链接与调试.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                    <a rel="next" href="16-浮点数与SIMD.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+    </body>
+</html>

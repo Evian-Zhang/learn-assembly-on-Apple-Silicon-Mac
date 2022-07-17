@@ -1,0 +1,227 @@
+<!DOCTYPE HTML>
+<html lang="zh-Hans" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>浮点数与SIMD - 在 Apple Silicon Mac 上入门汇编语言</title>
+        <!-- Custom HTML head -->
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <!-- MathJax -->
+        <script async type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="index.html">引言</a></li><li class="chapter-item expanded "><a href="1-底层的整数.html"><strong aria-hidden="true">1.</strong> 底层的整数</a></li><li class="chapter-item expanded "><a href="2-底层的浮点数.html"><strong aria-hidden="true">2.</strong> 底层的浮点数</a></li><li class="chapter-item expanded "><a href="3-硬件基础.html"><strong aria-hidden="true">3.</strong> 硬件基础</a></li><li class="chapter-item expanded "><a href="4-操作系统.html"><strong aria-hidden="true">4.</strong> 操作系统</a></li><li class="chapter-item expanded "><a href="5-第一个汇编程序.html"><strong aria-hidden="true">5.</strong> 第一个汇编程序</a></li><li class="chapter-item expanded "><a href="6-汇编语言初识.html"><strong aria-hidden="true">6.</strong> 汇编语言初识</a></li><li class="chapter-item expanded "><a href="7-汇编指令与寄存器.html"><strong aria-hidden="true">7.</strong> 汇编指令与寄存器</a></li><li class="chapter-item expanded "><a href="8-赋值指令.html"><strong aria-hidden="true">8.</strong> 赋值指令</a></li><li class="chapter-item expanded "><a href="9-基本的数据处理指令.html"><strong aria-hidden="true">9.</strong> 基本的数据处理指令</a></li><li class="chapter-item expanded "><a href="10-内存交互.html"><strong aria-hidden="true">10.</strong> 内存交互</a></li><li class="chapter-item expanded "><a href="11-跳转.html"><strong aria-hidden="true">11.</strong> 跳转</a></li><li class="chapter-item expanded "><a href="12-函数.html"><strong aria-hidden="true">12.</strong> 函数</a></li><li class="chapter-item expanded "><a href="13-系统调用.html"><strong aria-hidden="true">13.</strong> 系统调用</a></li><li class="chapter-item expanded "><a href="14-汇编、链接与调试.html"><strong aria-hidden="true">14.</strong> 汇编、链接与调试</a></li><li class="chapter-item expanded "><a href="15-与C语言交互.html"><strong aria-hidden="true">15.</strong> 与C语言交互</a></li><li class="chapter-item expanded "><a href="16-浮点数与SIMD.html" class="active"><strong aria-hidden="true">16.</strong> 浮点数与SIMD</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">在 Apple Silicon Mac 上入门汇编语言</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/Evian-Zhang/learn-assembly-on-Apple-Silicon-Mac" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="浮点数与simd"><a class="header" href="#浮点数与simd">浮点数与SIMD</a></h1>
+<p>在本教程的最后，我们将介绍浮点数与SIMD。这一章的内容在平时的汇编语言开发、程序逆向过程中不怎么常见，但是也是不可或缺的一部分。</p>
+<h2 id="浮点数"><a class="header" href="#浮点数">浮点数</a></h2>
+<p>在AArch64架构中，一般采用32个128位的SIMD与FP寄存器（这种寄存器的名字就叫做「SIMD与FP寄存器」（SIMD and FP register））来存储浮点数：</p>
+<p><img src="./assets/16-neon-fp.png" alt="NEON FP registers" /></p>
+<p>一般来说，在浮点数的处理过程中，我们常用的是其中的32位部分和64位部分，分别对应了C语言中的单精度浮点型<code>float</code>与双精度浮点型<code>double</code>。关于这两种类型的编码、特性，我们在<a href="./2-%E5%BA%95%E5%B1%82%E7%9A%84%E6%B5%AE%E7%82%B9%E6%95%B0.html">底层的浮点数</a>一章中已经介绍过了。</p>
+<p>对32位浮点型寄存器的引用，可以使用<code>s</code>，64位则使用<code>d</code>。例如，<code>s1</code>代表第2个SIMD与FP寄存器的32位部分，<code>d3</code>代表第4个SIMD与FP寄存器的64位部分。除此之外，16位的浮点型寄存器可以使用<code>h</code>，128位的则可以使用<code>q</code>。</p>
+<p>与整型类似，SIMD与FP寄存器之间也可以按照浮点数的运算法则进行算术运算，其对应的汇编指令只需要在前面加上<code>f</code>。例如：</p>
+<pre><code class="language-armasm">fadd    s1, s0, s2
+</code></pre>
+<p>意思就是将<code>s0</code>的值与<code>s2</code>相加，结果存储在<code>s1</code>中。</p>
+<p>而相关的内存读写指令则与整型相同，都是直接<code>ldr</code>与<code>str</code>。例如：</p>
+<pre><code class="language-armasm">ldr    s1, [x0]
+</code></pre>
+<p>意思就是将<code>x0</code>寄存器存储的地址指向的32位值导入<code>s1</code>中。</p>
+<p>关于SIMD与FP寄存器，除了我们日常会在浮点数的运算中使用到，还有一个非常常见的地方会用到，那就是大块儿内存的访问。以<code>memcpy</code>为例，我们知道，AArch64架构中，我们不能只使用一条语句实现从一个内存写入另一个内存中，而是需要使用<code>ldr</code>将源地址的值读入寄存器，再通过<code>str</code>将寄存器的值写入目的地址。但是，一个通用寄存器的大小最多只有64位，如果我们需要拷贝大块儿的内存，就需要执行多次这个读取-写入的指令序列。为了减小这种开销，我们可以使用SIMD与FP寄存器，因为其最大是128位。不仅如此，我们还可以使用之前介绍的<code>stp</code>、<code>ldp</code>指令，一次读写两块儿内存。例如：</p>
+<pre><code class="language-armasm">ldp    q0, q1, [x0]
+stp    q0, q1, [x1]
+</code></pre>
+<p>在Linux的glibc源码中的文件<code>sysdeps/aarch64/multiarch/memcpy_advsimd.S</code>里，我们就能看到类似的操作：</p>
+<pre><code class="language-armasm">#define A_q	q0
+#define B_q	q1
+#define C_q	q2
+#define D_q	q3
+#define E_q	q4
+#define F_q	q5
+#define G_q	q6
+#define H_q	q7
+; ...
+L(loop64):
+	stp	A_q, B_q, [dst, 16]
+	ldp	A_q, B_q, [src, 80]
+	stp	C_q, D_q, [dst, 48]
+	ldp	C_q, D_q, [src, 112]
+	add	src, src, 64
+	add	dst, dst, 64
+	subs	count, count, 64
+	b.hi	L(loop64)
+</code></pre>
+<h2 id="simd"><a class="header" href="#simd">SIMD</a></h2>
+<p>在我们日常编程的过程中，其实会遇到大量可以向量化并行化的模式。例如，对数组中的每个元素都进行同样的操作，或者图形学引擎、机器学习引擎中的大量矩阵运算。这种可以向量化的模式，一般而言，就是我们需要对多组数据进行同样的操作，而每组数据之间互不干扰。为了优化这种模式，许多的CPU架构都推出了SIMD指令。所谓的SIMD，就是指 <em>Single Instruction Multiple data</em>，也就是说，执行一条指令，可以操作多个数据（但速度快的同时，功耗也会显著上升）。</p>
+<p>Apple在Apple Silicon中实际上有一个协处理器专门负责矩阵运算的优化，也研发了自己的指令集AMX2。但是，目前并没有任何官方的文档，也没有任何一款汇编器支持这个指令集。我们只能通过<a href="https://developer.apple.com/accelerate/">Accelerate框架</a>调用这个协处理器。因此，我们并不会介绍这个指令集。</p>
+<p>AArch64架构实际上也有自己的SIMD指令，其中一种被称为NEON。Apple Silicon也支持NEON。</p>
+<p>所谓的NEON，实际上也是使用的这32个128位SIMD与FP寄存器。在NEON指令中，一个SIMD与FP寄存器会被看作多个「路」（Lane）：</p>
+<p><img src="./assets/16-neon-vector.png" alt="NEON vector" /></p>
+<p>一个SIMD与FP寄存器，可以看作2路64位，4路32位，8位16位，16路8位的寄存器。例如，对于4路32位来说，就是将这一个寄存器看作其同时存储了4个32位的数据。</p>
+<p>我们在实际使用时，可以如下使用：</p>
+<pre><code class="language-armasm">add.4h    v0, v1, v2
+</code></pre>
+<p>上述指令中，<code>v0</code>、<code>v1</code>、<code>v2</code>分别指代第一、二、三个SIMD与FP寄存器，而<code>.4h</code>则是指将其看作4路16位寄存器，也就是说，只使用在上图中倒数第二行的0、1、2、3这四个部分。</p>
+<p>最终的效果就是，将<code>v1</code>、<code>v2</code>中相应部分的4个值相加，结果存储到<code>v0</code>的相应部分中。</p>
+<p>与<code>.4h</code>对应的，我们分别可以用<code>b</code>、<code>h</code>、<code>s</code>、<code>d</code>指代8位、16位、32位、64位的部分。我们可以使用<code>.8b</code>指代8路8位寄存器，<code>.2s</code>指代2路32位寄存器。</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="15-与C语言交互.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="15-与C语言交互.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+    </body>
+</html>

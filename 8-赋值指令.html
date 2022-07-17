@@ -1,0 +1,252 @@
+<!DOCTYPE HTML>
+<html lang="zh-Hans" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>赋值指令 - 在 Apple Silicon Mac 上入门汇编语言</title>
+        <!-- Custom HTML head -->
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <!-- MathJax -->
+        <script async type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="index.html">引言</a></li><li class="chapter-item expanded "><a href="1-底层的整数.html"><strong aria-hidden="true">1.</strong> 底层的整数</a></li><li class="chapter-item expanded "><a href="2-底层的浮点数.html"><strong aria-hidden="true">2.</strong> 底层的浮点数</a></li><li class="chapter-item expanded "><a href="3-硬件基础.html"><strong aria-hidden="true">3.</strong> 硬件基础</a></li><li class="chapter-item expanded "><a href="4-操作系统.html"><strong aria-hidden="true">4.</strong> 操作系统</a></li><li class="chapter-item expanded "><a href="5-第一个汇编程序.html"><strong aria-hidden="true">5.</strong> 第一个汇编程序</a></li><li class="chapter-item expanded "><a href="6-汇编语言初识.html"><strong aria-hidden="true">6.</strong> 汇编语言初识</a></li><li class="chapter-item expanded "><a href="7-汇编指令与寄存器.html"><strong aria-hidden="true">7.</strong> 汇编指令与寄存器</a></li><li class="chapter-item expanded "><a href="8-赋值指令.html" class="active"><strong aria-hidden="true">8.</strong> 赋值指令</a></li><li class="chapter-item expanded "><a href="9-基本的数据处理指令.html"><strong aria-hidden="true">9.</strong> 基本的数据处理指令</a></li><li class="chapter-item expanded "><a href="10-内存交互.html"><strong aria-hidden="true">10.</strong> 内存交互</a></li><li class="chapter-item expanded "><a href="11-跳转.html"><strong aria-hidden="true">11.</strong> 跳转</a></li><li class="chapter-item expanded "><a href="12-函数.html"><strong aria-hidden="true">12.</strong> 函数</a></li><li class="chapter-item expanded "><a href="13-系统调用.html"><strong aria-hidden="true">13.</strong> 系统调用</a></li><li class="chapter-item expanded "><a href="14-汇编、链接与调试.html"><strong aria-hidden="true">14.</strong> 汇编、链接与调试</a></li><li class="chapter-item expanded "><a href="15-与C语言交互.html"><strong aria-hidden="true">15.</strong> 与C语言交互</a></li><li class="chapter-item expanded "><a href="16-浮点数与SIMD.html"><strong aria-hidden="true">16.</strong> 浮点数与SIMD</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">在 Apple Silicon Mac 上入门汇编语言</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/Evian-Zhang/learn-assembly-on-Apple-Silicon-Mac" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="赋值指令"><a class="header" href="#赋值指令">赋值指令</a></h1>
+<p>接下来几章将介绍A64指令集的一些基本指令操作。</p>
+<p>首先我们来了解一下有哪些给寄存器赋值的指令。向寄存器赋值，理论上主要由三种方式：用常数给寄存器赋值、用另一个寄存器的值给寄存器赋值、用内存里的值给寄存器赋值。这里主要介绍前两者，关于从内存向寄存器赋值的一系列与内存交互的指令将在后续的章节统一介绍。</p>
+<h2 id="将一个寄存器的值赋值给另一个寄存器"><a class="header" href="#将一个寄存器的值赋值给另一个寄存器">将一个寄存器的值赋值给另一个寄存器</a></h2>
+<p>这个过程非常简单，主要就是<code>mov</code>指令。</p>
+<h3 id="同宽度赋值"><a class="header" href="#同宽度赋值">同宽度赋值</a></h3>
+<p>例如，<code>mov    w0, w1</code>可以将<code>w1</code>的值赋值给<code>w0</code>；<code>mov    x0, x1</code>可以将<code>x1</code>赋值给<code>x0</code>。</p>
+<p>但值得注意的是，这些指令都只能在同样宽度的寄存器之间赋值。也就是说，我们不能通过<code>mov</code>指令，直接将<code>x0</code>的值赋给<code>w1</code>。这是为什么呢？</p>
+<p>这是因为，在不同宽度寄存器之间的赋值，需要考虑扩展与截断的问题。</p>
+<h3 id="扩展"><a class="header" href="#扩展">扩展</a></h3>
+<p>在<a href="./1-%E5%BA%95%E5%B1%82%E7%9A%84%E6%95%B4%E6%95%B0.html">底层的整数</a>一章中，我们讲到，在寄存器存储数的过程中，既可以把存储的值看作有符号整数，也可以把存储的值看作无符号整数。如果将寄存器存储的值看作无符号整数，那在不同宽度寄存器之间的赋值是非常简单且直接的。但是，如果把寄存器存储的值看作有符号整数，问题就变得复杂了起来。</p>
+<p>假设我们<code>w0</code>寄存器存储的值为<code>0xFFFFFFFD</code>。如果想要将<code>w0</code>寄存器赋值给<code>x1</code>寄存器，我们想得到的结果是怎样的呢？</p>
+<ul>
+<li>如果将<code>w0</code>寄存器存储的值看作无符号整数，则其存储的是十进制数4294967293。赋值给<code>x1</code>后，其同样也应该存储这个十进制数，因此<code>x1</code>寄存器存储的值应该是<code>0x00000000FFFFFFFD</code>。</li>
+<li>如果将<code>w0</code>寄存器存储的值看作有符号整数，则其存储的是十进制数-3。赋值给<code>x1</code>后，其存储的同样也应该是<code>-3</code>。因此<code>x1</code>寄存器存储的值应该是<code>0xFFFFFFFFFFFFFFFD</code>。</li>
+</ul>
+<p>根据上面的讨论，我们在从小宽度寄存器赋值给大宽度寄存器时，应当考虑其存储的数的意义。这种操作被称为<strong>扩展</strong>（Extension）。因此，AArch64架构下我们主要有两种扩展操作：有符号扩展<code>sxt</code>与无符号扩展<code>uxt</code>：</p>
+<ul>
+<li>无符号扩展非常好理解，就是将源寄存器直接赋值给目的寄存器相应的部分，剩余的高位使用<code>0</code>进行填充。</li>
+<li>有符号扩展则是，将源寄存器赋值给目的寄存器相应的部分，剩余的高位使用源寄存器的最高位进行填充。例如，<code>0xFFFFFFFD</code>二进制情况下最高位为<code>1</code>，因此剩余的高位将都用<code>1</code>进行填充。这种方式有效保证了源寄存器与目的寄存器的值，在有符号整数的意义下，符号和绝对值都是相同的。</li>
+</ul>
+<p>这两类指令分别提供了三个指令供我们使用：<code>sxtb</code>、<code>sxth</code>、<code>sxtw</code>与<code>uxtb</code>、<code>uxth</code>、<code>uxtw</code>（事实上，<code>uxtw</code>有些特殊，该指令并没有在ARM官方文档中记录，汇编器也是将其翻译为<code>ubfx</code>指令）。</p>
+<ul>
+<li>
+<p>以<code>b</code>结尾的指令</p>
+<p><code>b</code>代表byte。这类指令将源寄存器的最低位的一个字节赋值给目的寄存器，并进行相应的扩展。</p>
+</li>
+<li>
+<p>以<code>h</code>结尾的指令</p>
+<p><code>h</code>代表halfword。这类指令将源寄存器的最低位的两个字节赋值给目的寄存器，并进行相应的扩展。</p>
+</li>
+<li>
+<p>以<code>w</code>结尾的指令</p>
+<p><code>w</code>代表word。这类指令将源寄存器的最低位的四个字节赋值给目的寄存器，并进行相应的扩展。</p>
+</li>
+</ul>
+<p>根据这种描述，我们可以轻松推断出，这类指令的源操作数必须是32位寄存器，而目的操作数则可以是64位寄存器，也可以是32位寄存器（以<code>w</code>结尾的指令除外）。</p>
+<p>官方教程中的这张图可以直观地理解这些指令：</p>
+<p><img src="./assets/8-extension.jpg" alt="Extension" /></p>
+<h3 id="截断"><a class="header" href="#截断">截断</a></h3>
+<p>截断就是指，从大宽度的寄存器向小宽度的寄存器赋值。这一过程比较粗暴，就是直接将相应的部分赋值即可，不考虑任何符号因素。例如，如果想将<code>x0</code>的值赋值给<code>w1</code>，我们需要做的就是使用<code>mov    w0, w1</code>，也就是不考虑其高位，也不考虑其符号。</p>
+<h2 id="将常数赋值给寄存器"><a class="header" href="#将常数赋值给寄存器">将常数赋值给寄存器</a></h2>
+<p>这个问题乍看起来非常简单呀，和寄存器给寄存器赋值操作应该很类似才对。然而，由于AArch64架构的原因，这个问题变得复杂起来。</p>
+<p>我们知道，AArch64是定长指令集架构，其所有的指令在二进制层面长度都是32位。那么，我们怎样才能在定长指令集中编码这种常数赋值呢？如果是32位常数，肯定无法编码，因为指令总共长度才32位，至少还需要几位编码操作码与目的操作数吧。</p>
+<p>因此，在AArch64架构下，真正的<code>mov</code>指令只能适用于少部分的情况。例如，如果我们写下这样的汇编语句：</p>
+<pre><code class="language-armasm">mov    w0, #0x114514
+</code></pre>
+<p>编译会得到这样的报错：</p>
+<pre><code class="language-shell">$ as test.s -o test.o
+test.s:6:10: error: expected compatible register or logical immediate
+        mov     w0, #0x114514
+                    ^
+</code></pre>
+<p>为了解决这种情况，就要请出我们无敌的<a href="https://developer.arm.com/documentation/dui0489/c/arm-and-thumb-instructions/pseudo-instructions/ldr-pseudo-instruction"><code>ldr</code>伪指令</a>了。</p>
+<p>刚刚我们已经讨论过，在指令都是定长32位的情况下，必然不可能完整编码32位整数的赋值。因此，我们需要跳脱开来。<code>ldr</code>伪指令采取的策略就是，如果我们想要赋值的整数不能通过<code>mov</code>指令进行编码，那么就将这个整数存储在二进制镜像的数据区，然后产生一个内存读取指令，读取相应内存的数据即可（更严谨地来说，是一个PC-relative的地址，从而不用担心内存地址本身也是超过32位的数值这件事了）。</p>
+<p><code>ldr</code>伪指令的语法比较特殊，是<code>ldr    register, =expression</code>的形式。</p>
+<p>例如，我们不妨来试验一下。在<a href="https://github.com/Evian-Zhang/learn-assembly-on-Apple-Silicon-Mac/blob/master/codes/8-ldr-pseudo-instruction.s">codes/8-ldr-pseudo-instrution.s</a>文件，其核心内容如下：</p>
+<pre><code class="language-armasm">ldr    w0, =0x114514
+</code></pre>
+<p>我们对其编译、链接后的二进制文件<code>8-ldr-pseudo-instruction</code>文件进行反汇编：</p>
+<pre><code class="language-bash">otool -tvV 8-ldr-pseudo-insruction
+</code></pre>
+<p>可以看到这样的片段：</p>
+<pre><code class="language-plaintext">_main:
+0000000100003fac	ldr	w0, 0x100003fb4
+0000000100003fb0	ret
+0000000100003fb4	.long	0x00114514
+</code></pre>
+<p>由此可见，<code>ldr</code>伪指令在<code>0x10003fb4</code>地址处生成了我们想要赋值的二进制数<code>0x114514</code>，随后生成一条内存读取指令<code>ldr    w0, 0x100003fb4</code>（事实上是PC-relative的，<code>otool</code>把它显式化了）。</p>
+<p>这一做法，有效解决了<code>mov</code>指令无法编码所有32位操作数的困难。同时<code>ldr</code>伪指令会贴心地检查操作数是否可以被<code>mov</code>指令编码，如果可以，则直接使用<code>mov</code>指令。例如，<code>ldr    w0, =0</code>会生成<code>mov    w0, #0</code>，从而最大程度减少内存访问。</p>
+<p>因此，当我们想用常数给寄存器赋值时，可以统一使用<code>ldr</code>伪指令。</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="7-汇编指令与寄存器.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                            <a rel="next" href="9-基本的数据处理指令.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="7-汇编指令与寄存器.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                    <a rel="next" href="9-基本的数据处理指令.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+    </body>
+</html>

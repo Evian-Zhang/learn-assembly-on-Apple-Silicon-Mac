@@ -1,0 +1,266 @@
+<!DOCTYPE HTML>
+<html lang="zh-Hans" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>基本的数据处理指令 - 在 Apple Silicon Mac 上入门汇编语言</title>
+        <!-- Custom HTML head -->
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <!-- MathJax -->
+        <script async type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="index.html">引言</a></li><li class="chapter-item expanded "><a href="1-底层的整数.html"><strong aria-hidden="true">1.</strong> 底层的整数</a></li><li class="chapter-item expanded "><a href="2-底层的浮点数.html"><strong aria-hidden="true">2.</strong> 底层的浮点数</a></li><li class="chapter-item expanded "><a href="3-硬件基础.html"><strong aria-hidden="true">3.</strong> 硬件基础</a></li><li class="chapter-item expanded "><a href="4-操作系统.html"><strong aria-hidden="true">4.</strong> 操作系统</a></li><li class="chapter-item expanded "><a href="5-第一个汇编程序.html"><strong aria-hidden="true">5.</strong> 第一个汇编程序</a></li><li class="chapter-item expanded "><a href="6-汇编语言初识.html"><strong aria-hidden="true">6.</strong> 汇编语言初识</a></li><li class="chapter-item expanded "><a href="7-汇编指令与寄存器.html"><strong aria-hidden="true">7.</strong> 汇编指令与寄存器</a></li><li class="chapter-item expanded "><a href="8-赋值指令.html"><strong aria-hidden="true">8.</strong> 赋值指令</a></li><li class="chapter-item expanded "><a href="9-基本的数据处理指令.html" class="active"><strong aria-hidden="true">9.</strong> 基本的数据处理指令</a></li><li class="chapter-item expanded "><a href="10-内存交互.html"><strong aria-hidden="true">10.</strong> 内存交互</a></li><li class="chapter-item expanded "><a href="11-跳转.html"><strong aria-hidden="true">11.</strong> 跳转</a></li><li class="chapter-item expanded "><a href="12-函数.html"><strong aria-hidden="true">12.</strong> 函数</a></li><li class="chapter-item expanded "><a href="13-系统调用.html"><strong aria-hidden="true">13.</strong> 系统调用</a></li><li class="chapter-item expanded "><a href="14-汇编、链接与调试.html"><strong aria-hidden="true">14.</strong> 汇编、链接与调试</a></li><li class="chapter-item expanded "><a href="15-与C语言交互.html"><strong aria-hidden="true">15.</strong> 与C语言交互</a></li><li class="chapter-item expanded "><a href="16-浮点数与SIMD.html"><strong aria-hidden="true">16.</strong> 浮点数与SIMD</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">在 Apple Silicon Mac 上入门汇编语言</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/Evian-Zhang/learn-assembly-on-Apple-Silicon-Mac" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="基本的数据处理指令"><a class="header" href="#基本的数据处理指令">基本的数据处理指令</a></h1>
+<p>本章将介绍一些常用的基本的数据处理指令。</p>
+<p>我们常见的数据处理指令包括加、减、乘、除、求余、与、或、非、异或等。大部分的数据处理指令都是二元运算，也就是说，需要将两个操作数进行计算，然后赋值给第三个操作数。因此，这些二元运算指令大都有如下的形式：</p>
+<pre><code class="language-plaintext">opcode    dest, source1, source2
+</code></pre>
+<h2 id="加减与或非异或"><a class="header" href="#加减与或非异或">加、减、与、或、非、异或</a></h2>
+<p>首先是一些常规的、比较简单的计算：</p>
+<ul>
+<li>
+<p>加</p>
+<pre><code class="language-armasm">add    dest_reg, src_reg1, src_reg2/imm
+</code></pre>
+</li>
+<li>
+<p>减</p>
+<pre><code class="language-armasm">sub    dest_reg, src_reg1, src_reg2/imm
+</code></pre>
+</li>
+<li>
+<p>与</p>
+<pre><code class="language-armasm">and    dest_reg, src_reg1, src_reg2/imm
+</code></pre>
+</li>
+<li>
+<p>或</p>
+<pre><code class="language-armasm">orr    dest_reg, src_reg1, src_reg2/imm
+</code></pre>
+</li>
+<li>
+<p>非</p>
+<pre><code class="language-armasm">mvn    dest_reg, src_reg
+</code></pre>
+</li>
+<li>
+<p>异或</p>
+<pre><code class="language-armasm">eor    dest_reg, src_reg1, src_reg2/imm
+</code></pre>
+</li>
+</ul>
+<p>值得一提的是，这些操作都没有涉及到符号。在<a href="./1-%E5%BA%95%E5%B1%82%E7%9A%84%E6%95%B4%E6%95%B0.html">底层的整数</a>一章中，我们提到，使用补码存储整数的好处就是，无论是有符号整数还是无符号整数，其加减运算都不需要区分有无符号。而对与、或、非、异或来说，这些操作都是逐位进行逻辑运算，因此在这些操作中，也不用区分有无符号。</p>
+<h2 id="乘除求余"><a class="header" href="#乘除求余">乘、除、求余</a></h2>
+<ul>
+<li>
+<p>乘</p>
+<pre><code class="language-armasm">mul    dest_reg, src_reg1, src_reg2
+umull  dest_reg, src_reg1, src_reg2
+smull  dest_reg, src_reg1, src_reg2
+</code></pre>
+<p>其中，<code>mul</code>指令的三个操作数都是32位寄存器，<code>umull</code>、<code>smull</code>的源操作数是32位寄存器，目的操作数是64位寄存器。</p>
+<p><code>umull</code>代表无符号乘法，<code>smull</code>代表有符号乘法。</p>
+</li>
+<li>
+<p>除</p>
+<pre><code class="language-armasm">sdiv   dest_reg, src_reg1, src_reg2
+udiv   dest_reg, src_reg1, src_reg2
+</code></pre>
+<p>其中，<code>sdiv</code>代表有符号除法，<code>udiv</code>代表无符号除法。</p>
+<p>使用这种除法得到的结果，与C语言中的除法操作类似，都是向0取整的整数。因此，对5和2进行<code>sdiv</code>，得到的是2；对-5和-2进行<code>sdiv</code>，得到的是-2。</p>
+</li>
+<li>
+<p>求余</p>
+<p>A64指令集不提供直接的求余计算。如果我们想求存储有符号整数的寄存器<code>w1</code>模<code>w2</code>的余数，结果存储在<code>w0</code>中，那么，根据上面介绍的数据处理指令，我们可以这么做：</p>
+<pre><code class="language-armasm">sdiv   w0, w1, w2
+mul    w0, w2, w0
+sub    w0, w1, w0
+</code></pre>
+<p>我们可以查看<a href="https://github.com/Evian-Zhang/learn-assembly-on-Apple-Silicon-Mac/blob/master/codes/9-div.s">codes/9-div.s</a>文件，编译并运行它，使用<code>echo $?</code>查看结果是否符合预期。</p>
+</li>
+</ul>
+<h2 id="移位操作"><a class="header" href="#移位操作">移位操作</a></h2>
+<p>由于计算机底层存储数是用二进制，所以还有一类操作非常常见：移位操作。其中最常用的莫过于逻辑左移：</p>
+<pre><code class="language-armasm">lsl   w0, w1, #2
+</code></pre>
+<p>上述指令的意思是，将<code>w1</code>内的值逻辑左移2位赋值给<code>w0</code>。例如，<code>w1</code>的值是<code>0x12345678</code>，用二进制表示就是<code>0001 0010 0011 0100 0101 0110 0111 1000</code>。所谓的逻辑左移，就是将这个二进制数整体向左移动2位（舍弃开头2位），最后的2位用0填充。也就是说，最终<code>w0</code>为<code>0100 1000 1101 0001 0101 1001 1110 0000</code>，也就是<code>0x48d159e0</code>。</p>
+<p>逻辑左移操作有什么用呢？我们通过简单的数学知识就可以知道，对于宽度为\(n\)的寄存器来说，将其值\(x\)逻辑左移\(m\)位的运算\(lsl(x, m)\)满足</p>
+<p>$$
+lsl(x, m)\equiv 2^{m}\cdot x\pmod{2^{n}}
+$$</p>
+<p>也就是说，在汇编层面，如果想将一个数乘2，可以直接逻辑左移1位；乘4就逻辑左移2位。</p>
+<h3 id="操作数的可选移位"><a class="header" href="#操作数的可选移位">操作数的可选移位</a></h3>
+<p>在之后的章节里，我们会发现，将某个寄存器的值乘以2的倍数往往是一个常见的中间操作。因此，AArch64针对这种情况，对部分指令进行了优化。<a href="https://developer.arm.com/documentation/dui0489/h/arm-and-thumb-instructions/operand2-as-a-register-with-optional-shift">当我们使用部分指令的时候，可以附带一个移位</a>。例如：</p>
+<pre><code class="language-armasm">add    w0, w1, w2, lsl #2
+</code></pre>
+<p>就是指，将<code>w2</code>的值乘4，加上<code>w1</code>的值，赋值给<code>w0</code>。</p>
+<p>当然，并非所有指令的操作数都可以带上可选移位，可以使用可选移位的指令都会在官方文档中注明。目前我们还没有遇到什么可选移位很重要的地方。</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="8-赋值指令.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                            <a rel="next" href="10-内存交互.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="8-赋值指令.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                    <a rel="next" href="10-内存交互.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+    </body>
+</html>
