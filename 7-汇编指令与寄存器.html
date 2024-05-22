@@ -1,0 +1,318 @@
+<!DOCTYPE HTML>
+<html lang="zh-Hans" class="light" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>汇编指令与寄存器 - 在 Apple Silicon Mac 上入门汇编语言</title>
+
+
+        <!-- Custom HTML head -->
+        
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+        <!-- MathJax -->
+        <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    </head>
+    <body class="sidebar-visible no-js">
+    <div id="body-container">
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('light')
+            html.classList.add(theme);
+            var body = document.querySelector('body');
+            body.classList.remove('no-js')
+            body.classList.add('js');
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var body = document.querySelector('body');
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            body.classList.remove('sidebar-visible');
+            body.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="index.html">引言</a></li><li class="chapter-item expanded "><a href="1-底层的整数.html"><strong aria-hidden="true">1.</strong> 底层的整数</a></li><li class="chapter-item expanded "><a href="2-底层的浮点数.html"><strong aria-hidden="true">2.</strong> 底层的浮点数</a></li><li class="chapter-item expanded "><a href="3-硬件基础.html"><strong aria-hidden="true">3.</strong> 硬件基础</a></li><li class="chapter-item expanded "><a href="4-操作系统.html"><strong aria-hidden="true">4.</strong> 操作系统</a></li><li class="chapter-item expanded "><a href="5-第一个汇编程序.html"><strong aria-hidden="true">5.</strong> 第一个汇编程序</a></li><li class="chapter-item expanded "><a href="6-汇编语言初识.html"><strong aria-hidden="true">6.</strong> 汇编语言初识</a></li><li class="chapter-item expanded "><a href="7-汇编指令与寄存器.html" class="active"><strong aria-hidden="true">7.</strong> 汇编指令与寄存器</a></li><li class="chapter-item expanded "><a href="8-赋值指令.html"><strong aria-hidden="true">8.</strong> 赋值指令</a></li><li class="chapter-item expanded "><a href="9-基本的数据处理指令.html"><strong aria-hidden="true">9.</strong> 基本的数据处理指令</a></li><li class="chapter-item expanded "><a href="10-内存交互.html"><strong aria-hidden="true">10.</strong> 内存交互</a></li><li class="chapter-item expanded "><a href="11-跳转.html"><strong aria-hidden="true">11.</strong> 跳转</a></li><li class="chapter-item expanded "><a href="12-函数.html"><strong aria-hidden="true">12.</strong> 函数</a></li><li class="chapter-item expanded "><a href="13-系统调用.html"><strong aria-hidden="true">13.</strong> 系统调用</a></li><li class="chapter-item expanded "><a href="14-汇编、链接与调试.html"><strong aria-hidden="true">14.</strong> 汇编、链接与调试</a></li><li class="chapter-item expanded "><a href="15-与C语言交互.html"><strong aria-hidden="true">15.</strong> 与C语言交互</a></li><li class="chapter-item expanded "><a href="16-浮点数与SIMD.html"><strong aria-hidden="true">16.</strong> 浮点数与SIMD</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <!-- Track and set sidebar scroll position -->
+        <script>
+            var sidebarScrollbox = document.querySelector('#sidebar .sidebar-scrollbox');
+            sidebarScrollbox.addEventListener('click', function(e) {
+                if (e.target.tagName === 'A') {
+                    sessionStorage.setItem('sidebar-scroll', sidebarScrollbox.scrollTop);
+                }
+            }, { passive: true });
+            var sidebarScrollTop = sessionStorage.getItem('sidebar-scroll');
+            sessionStorage.removeItem('sidebar-scroll');
+            if (sidebarScrollTop) {
+                // preserve sidebar scroll position when navigating via links within sidebar
+                sidebarScrollbox.scrollTop = sidebarScrollTop;
+            } else {
+                // scroll sidebar to current active section when navigating via "next/previous chapter" buttons
+                var activeSection = document.querySelector('#sidebar .active');
+                if (activeSection) {
+                    activeSection.scrollIntoView({ block: 'center' });
+                }
+            }
+        </script>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">在 Apple Silicon Mac 上入门汇编语言</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/Evian-Zhang/learn-assembly-on-Apple-Silicon-Mac" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="汇编指令与寄存器"><a class="header" href="#汇编指令与寄存器">汇编指令与寄存器</a></h1>
+<p>在接下来的几篇文章中，我们将介绍AArch64架构下的具体的汇编语言的写法。目前，我们的所有修改都是基于之前最基本的程序：</p>
+<pre><code class="language-armasm"># 5-basic.s
+    .section    __TEXT,__text
+    .globl  _main
+    .p2align    2
+_main:
+    mov    w0, #0
+    ret
+</code></pre>
+<p>在<a href="./5-%E7%AC%AC%E4%B8%80%E4%B8%AA%E6%B1%87%E7%BC%96%E7%A8%8B%E5%BA%8F.html">第一个汇编程序</a>一章中我们提到，将其编译完成并运行之后，可以通过</p>
+<pre><code class="language-bash">echo $?
+</code></pre>
+<p>来获得程序的返回值，也就是存储在<code>w0</code>里的值。这一技巧将在这几章中反复使用。</p>
+<h2 id="汇编指令"><a class="header" href="#汇编指令">汇编指令</a></h2>
+<p>A64指令集的汇编指令格式一般来说，是</p>
+<pre><code class="language-plaintext">{opcode {dest{, source1{, source2{, source3}}}}}
+</code></pre>
+<p>的形式。</p>
+<p>其中，<code>opcode</code>指这条指令的操作码，在汇编语言中常用<strong>助记符</strong>表示。<code>dest</code>为目的操作数，<code>source</code>为源操作数。</p>
+<p>以我们上一章用到的<code>mov</code>指令为例：</p>
+<pre><code class="language-armasm">mov    w0, #0
+</code></pre>
+<p>这条指令中：</p>
+<ul>
+<li><code>mov</code>为助记符，表示这条指令是一条move指令</li>
+<li><code>w0</code>和<code>#0</code>为这条指令的操作数。由于在A64指令集中目的操作数在源操作数之前，因此<code>w0</code>为目的操作数，<code>#0</code>为源操作数</li>
+<li>这条指令可以理解为，将源操作数<code>#0</code> move到目的操作数<code>w0</code>之中</li>
+</ul>
+<p>A64指令集的汇编指令是RISC架构的指令集。RISC架构指令集的最主要的特点就是其指令种类少，且指令都是定长的（32位）。这一特点带来的一个显著结果就是，大量我们在汇编层面看到的指令实际上都是某些指令的别名（alias）。也就是说，某些指令语句的机器码是相同的。这样CPU只需要实现一些更通用的指令逻辑，而将特殊的指令逻辑的翻译工作交给汇编器来执行。</p>
+<p>例如，在<a href="https://github.com/Evian-Zhang/learn-assembly-on-Apple-Silicon-Mac/blob/master/codes/7-alias-instructions.s">codes/7-alias-instructions.s</a>文件中，包含两条汇编语句：</p>
+<pre><code class="language-armasm">neg    w0, w1
+sub    w0, wzr, w1
+</code></pre>
+<p>第一条语句<code>neg    w0, w1</code>的意思是将<code>w1</code>寄存器的值看作有符号整数，取其相反数赋值给<code>w0</code>寄存器；第二条指令<code>sub    w0, wzr, w1</code>的意思是用0减去<code>w1</code>的值赋值给<code>w0</code>寄存器。显而易见，这两条汇编指令是等价的。而在AArch64指令集下，后者正是前者的别名。也就是说，汇编器总是会将<code>neg    w0, w1</code>翻译为<code>sub    w0, wzr, w1</code>指令。而同时，为了方便开发者阅读反汇编代码，标准要求<code>sub    w0, wzr, w1</code>总应该反汇编为<code>neg    w0, w1</code>。</p>
+<p>我们对编译、链接后的程序<code>7-alias-instructions</code>使用<code>otool -tvV 7-alias-instructions</code>进行反汇编，结果中有一段：</p>
+<pre><code class="language-plaintext">_main:
+0000000100003fac	neg	w0, w1
+0000000100003fb0	neg	w0, w1
+</code></pre>
+<p>由此可见，汇编器确实会将别名的指令翻译为同一个指令。</p>
+<h2 id="寄存器"><a class="header" href="#寄存器">寄存器</a></h2>
+<p>寄存器是直接参与运算的部件。本小节将介绍AArch64架构下主要用到的部分寄存器。</p>
+<h3 id="通用寄存器"><a class="header" href="#通用寄存器">通用寄存器</a></h3>
+<p>在AArch64架构下，有31个通用寄存器。这些通用寄存器可以作为大部分指令的操作数参与运算。</p>
+<p>有三套记号用于指代这31个通用寄存器：</p>
+<ul>
+<li>
+<p><code>r0</code>至<code>r30</code></p>
+<p>一般用这套记号来指代这些寄存器本身。这些记号通常用于描述汇编指令行为，不会参与到汇编指令中。</p>
+</li>
+<li>
+<p><code>x0</code>至<code>x30</code></p>
+<p>一般用这套记号表示这些寄存器的64位部分。例如，<code>x3</code>表示<code>r3</code>寄存器的64位部分。由于AArch64架构下的通用寄存器都是64位的，所以这套记号其实就代表这些寄存器的所有位。</p>
+</li>
+<li>
+<p><code>w0</code>至<code>w30</code></p>
+<p>一般用这套记号表示这些寄存器的低32位部分。例如，<code>w3</code>表示<code>r3</code>寄存器的低32位部分。</p>
+</li>
+</ul>
+<p>例如</p>
+<pre><code class="language-armasm">ldr    x3, =0x0123456789abcdef
+</code></pre>
+<p>这条汇编指令将<code>0x0123456789abcdef</code>这个64位数存储到了<code>x3</code>中，也就是说<code>r3</code>寄存器现在的值就是<code>0x0123456789abcdef</code>。但是，如果我们直接访问<code>w3</code>，可以发现<code>w3</code>寄存器中存储的是<code>0x89abcdef</code>。</p>
+<p>在官方指南中的这张图可以直观地展示这三套记号的关系：</p>
+<p><img src="./assets/7-registers.png" alt="Registers" /></p>
+<h3 id="零寄存器"><a class="header" href="#零寄存器">零寄存器</a></h3>
+<p>寄存器<code>xzr</code>和<code>wzr</code>被称为零寄存器。所谓零寄存器，就是指读取该寄存器的值，永远为0；向该寄存器写入数值将无效，也就是说无法向该寄存器写入数值。其中<code>xzr</code>为64位的零寄存器，<code>wzr</code>为32位的零寄存器。</p>
+<p>也就是说，下面这种写法</p>
+<pre><code class="language-armasm">mov    w0, wzr
+</code></pre>
+<p>与</p>
+<pre><code class="language-armasm">mov    w0, #0
+</code></pre>
+<p>的效果应当是相同的。我们可以编译并运行<a href="https://github.com/Evian-Zhang/learn-assembly-on-Apple-Silicon-Mac/blob/master/codes/7-zero-register.s">codes/7-zero-register.s</a>文件，利用<code>echo $?</code>查看结果。</p>
+<p>那么我们为什么需要这种零寄存器呢？直接用常数0不就好了？事实上，以ARM、RISC-V、MIPS为代表的一众RISC指令集中，都会有零寄存器的存在。关于其存在的意义，可以参考Stackoverflow的问答<a href="https://electronics.stackexchange.com/a/293921">Why MIPS uses R0 as ”zero“</a>以及知乎提问<a href="https://www.zhihu.com/question/308314026/answer/573831395">RISC-V RV32I中零寄存器有什么用？</a>。总结而言，由于精简指令集的原因，部分指令无法直接使用常数作为操作数。但是0作为一个特殊的常数经常出现在各种程序逻辑中，那么零寄存器的出现就可以省去将常数0存储到寄存器中的步骤。此外，使用零寄存器，也可以简化指令内部的伪指令逻辑。</p>
+<p>同时，在官方指南中提到：</p>
+<blockquote>
+<p>In instruction encodings, the value <code>0b11111</code> (31) is used to indicate the ZR (zero register). This indicates that the argument takes the value zero, but does not indicate that the ZR is implemented as a physical register.</p>
+</blockquote>
+<p>意思是说，零寄存器并不需要是一个物理意义上的寄存器，只需要在指令内部逻辑中加一些额外的检查即可。</p>
+<p>所以可以看出，零寄存器的作用大、实现简单，因此AArch64中才会使用零寄存器。</p>
+<h3 id="其他寄存器"><a class="header" href="#其他寄存器">其他寄存器</a></h3>
+<p>其他常用的寄存器有<code>sp</code>寄存器与<code>pc</code>寄存器。</p>
+<p><code>sp</code>寄存器代表栈顶的内存地址。关于栈、内存交互，在后面的文章中会具体提到。</p>
+<p><code>pc</code>寄存器全称为Program Counter，熟悉计算机组成原理的开发者一定了解，<code>pc</code>寄存器在指令执行时起了至关重要的作用。该寄存器内存储的是即将执行的指令的地址，当CPU执行一个指令时，其首先会访问<code>pc</code>寄存器，将其存储的值看作下一条指令地址，从内存中获取相应的指令，进一步译码、执行。对于黑客来说，攻击一个程序，往往本质上都是控制程序的<code>pc</code>寄存器，使其值由自己控制，从而能够让程序执行攻击者想要执行的指令。</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="6-汇编语言初识.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="8-赋值指令.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="6-汇编语言初识.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="8-赋值指令.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </div>
+    </body>
+</html>
