@@ -1,7 +1,6 @@
 [book]
 authors = ["Evian-Zhang"]
 language = "zh-Hans"
-multilingual = false
 src = "src"
 title = "在 Apple Silicon Mac 上入门汇编语言"
 
